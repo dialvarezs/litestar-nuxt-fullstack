@@ -1,0 +1,27 @@
+FROM python:3.13-slim
+
+ENV DEBUG=False
+ENV PYTHONBUFFERED=1
+
+
+RUN apt-get update && apt-get upgrade -y && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY . /app
+
+WORKDIR /app
+
+RUN --mount=from=ghcr.io/astral-sh/uv:latest,source=/uv,target=/bin/uv \
+    uv sync -nq --no-dev
+
+RUN python -m compileall app/
+
+ENV VIRTUAL_ENV=/app/.venv
+ENV PATH="/app/.venv/bin:${PATH}"
+
+RUN adduser --uid 921 --system --no-create-home app
+
+USER app
+
+EXPOSE 8000
+CMD ["sh", "scripts/entrypoint.sh"]

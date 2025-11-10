@@ -1,0 +1,30 @@
+set shell := ["uv", "run", "bash", "-c"]
+set dotenv-load := true
+
+default: run
+
+run:
+    litestar run --reload
+
+db *args='':
+    litestar database {{args}}
+
+format: ruff_fmt ruff_sort_imports
+
+ruff_fmt:
+    ruff format app/ migrations/ tests/
+
+ruff_sort_imports:
+    ruff check --select I,F401 --fix app/ migrations/ tests/
+
+lint:
+    ruff check --fix app/ migrations/ tests/
+
+pyrefly:
+    pyrefly check app/ tests/
+
+ty:
+    ty check app/ tests/
+
+test *args='':
+    pytest {{args}}

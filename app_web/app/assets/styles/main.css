@@ -1,0 +1,21 @@
+@import "tailwindcss";
+@import "tailwindcss-primeui";
+@custom-variant dark (&:where(.app-dark, .app-dark *));
+
+@layer components {
+  .admin-form {
+    @apply flex flex-col gap-6 md:w-full lg:w-2/3 2xl:w-1/2 mx-auto;
+  }
+
+  .admin-form-actions {
+    @apply mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end;
+  }
+
+  .admin-form-submit {
+    @apply w-full justify-center gap-2 rounded-lg px-6 py-3 text-sm font-semibold shadow-sm transition-all duration-150 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 sm:order-2 sm:w-auto;
+  }
+
+  .admin-form-cancel {
+    @apply w-full justify-center gap-2 rounded-lg px-6 py-3 text-sm font-medium text-surface-700 hover:bg-surface-100 dark:text-surface-200 dark:hover:bg-surface-700/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-surface-400/60 sm:order-1 sm:w-auto;
+  }
+}

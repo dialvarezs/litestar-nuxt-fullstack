@@ -1,0 +1,4 @@
+debug = true
+disable_auth = false
+secret_key = "your-super-secret-jwt-key-change-this-in-production-minimum-32-characters-long"
+cors_allowed_origins = ["http://localhost:3000", "http://localhost:8000"]

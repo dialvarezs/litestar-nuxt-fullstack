@@ -1,0 +1,45 @@
+{
+  "name": "nuxt-app",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev --host",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "typecheck": "nuxt typecheck .",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "dependencies": {
+    "@primeuix/themes": "^1.2.5",
+    "@primevue/forms": "^4.4.1",
+    "@vueuse/core": "^14.0.0",
+    "change-case": "^5.4.4",
+    "date-fns": "^4.1.0",
+    "nuxt": "^4.2.1",
+    "pinia": "^3.0.4",
+    "primevue": "^4.4.1",
+    "valibot": "^1.1.0",
+    "vue": "^3.5.24",
+    "vue-router": "^4.6.3"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^6.2.0",
+    "@iconify-json/material-symbols": "^1.2.44",
+    "@iconify-json/mdi": "^1.2.3",
+    "@nuxt/eslint": "^1.10.0",
+    "@nuxt/icon": "^2.1.0",
+    "@nuxtjs/tailwindcss": "^7.0.0-beta.1",
+    "@pinia/nuxt": "^0.11.3",
+    "@primevue/nuxt-module": "^4.4.1",
+    "@vueuse/nuxt": "^14.0.0",
+    "eslint": "^9.39.1",
+    "eslint-plugin-perfectionist": "^4.15.1",
+    "stylelint": "^16.25.0",
+    "tailwindcss-primeui": "^0.6.1",
+    "typescript": "^5.9.3",
+    "vue-tsc": "^3.1.3"
+  }
+}
