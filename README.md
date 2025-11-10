@@ -1,20 +1,28 @@
 # Full Stack Application Template
 
-A modern full-stack web application template built with Python/Litestar backend and Nuxt 4/Vue 3 frontend, featuring role-based access control with granular permissions.
+A modern full-stack web application template built with [Litestar](https://litestar.dev/) backend and [Nuxt](https://nuxt.com/) frontend.
+
+## What's Included
+
+A complete authentication and authorization system with:
+
+- **User Management**: Full CRUD for users with role assignment
+- **Role & Permission System**: Granular resource-level permissions (e.g., `users:create`, `roles:read`)
+- **Admin Dashboard**: Pre-built UI for managing users, roles, and permissions
 
 ## Quick Start
 
 ### Prerequisites
-- **Backend**: Python 3.13+, [uv](https://docs.astral.sh/uv/), [just](https://github.com/casey/just)
-- **Frontend**: Node.js 18+, [bun](https://bun.sh/)
+- **Backend**: [uv](https://docs.astral.sh/uv/), [just](https://github.com/casey/just)
+- **Frontend**: [bun](https://bun.sh/)
 - **Database**: PostgreSQL
 
 ### Development Setup
 
 ```bash
 # Clone the repository
-git clone <repository-url>
-cd <project-directory>
+git clone https://github.com/dialvarezs/listestar-nuxt-fullstack
+cd listestar-nuxt-fullstack
 
 # Backend setup
 cd app_api
