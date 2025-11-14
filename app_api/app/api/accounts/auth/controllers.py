@@ -1,9 +1,4 @@
-"""
-Authentication controller module.
-
-This module provides authentication endpoints for user login and logout
-functionality with JWT token-based authentication.
-"""
+"""Authentication controller module."""
 
 from typing import Annotated, Any
 
@@ -45,17 +40,6 @@ class AuthController(Controller):
 
         Validates user credentials, updates last login timestamp, and returns
         a JWT token for authenticated access.
-
-        Args:
-            request: The incoming request containing application state
-            data: Login credentials containing username and password
-            auth_service: Authentication service for credential validation
-
-        Returns:
-            Response containing JWT token and user information
-
-        Raises:
-            HTTPException: If credentials are invalid (401)
         """
         user = await auth_service.authenticate_user(data.username, data.password)
         if not user:
@@ -71,12 +55,7 @@ class AuthController(Controller):
     @post("/logout")
     async def logout(self) -> Response[None]:
         """
-        Log out the current user.
-
-        Clears the authentication token cookie to log out the user.
-
-        Returns:
-            Empty response with token cookie deleted
+        Log out the current user by clearing the authentication token.
         """
         response = Response(content=None, status_code=HTTP_200_OK)
         response.delete_cookie("token")

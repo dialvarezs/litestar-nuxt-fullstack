@@ -1,9 +1,4 @@
-"""
-User management controller module.
-
-This module provides comprehensive user management functionality including
-CRUD operations, password management, and username availability checking.
-"""
+"""User management controller module."""
 
 from typing import Any, Sequence
 from uuid import UUID
@@ -48,44 +43,31 @@ class UserController(Controller):
     dependencies = {"user_service": Provide(provide_user_service)}
     exception_handlers = {NotFoundError: not_found_error_handler}
 
-    @get("/", summary="ListUsers", guards=[has_permission("users", "list")])
+    @get(
+        "/",
+        summary="ListUsers",
+        guards=[has_permission("users", "list")],
+    )
     async def list(self, user_service: UserService) -> Sequence[User]:
         """
         List all users in the system.
 
-        Retrieves a complete list of all users registered in the system.
         This endpoint requires the 'users:list' permission.
-
-        Args:
-            user_service: The user service instance for business operations
-
-        Returns:
-            A list of all User objects in the system
-
-        Raises:
-            PermissionDeniedException: If the user lacks 'users:list' permission
         """
         return await user_service.list()
 
-    @post("/", summary="CreateUser", dto=UserWriteDTO, guards=[has_permission("users", "create")])
+    @post(
+        "/",
+        summary="CreateUser",
+        dto=UserWriteDTO,
+        guards=[has_permission("users", "create")],
+    )
     async def create(self, data: User, user_service: UserService) -> User:
         """
         Create a new user with associated roles.
 
         Creates a new user account with the provided user data and assigns
-        any specified roles. Validates that the username and email are unique
-        before creating the user. Requires the 'users:create' permission.
-
-        Args:
-            data: The user data for the new account, validated against UserWriteDTO
-            user_service: The user service instance for business operations
-
-        Returns:
-            The newly created User object with assigned roles
-
-        Raises:
-            PermissionDeniedException: If the user lacks 'users:create' permission
-            HTTPException: With status 409 if username or email already exists in the system
+        any specified roles. Requires the 'users:create' permission.
         """
         try:
             return await user_service.create_user_with_roles(data)
@@ -99,19 +81,14 @@ class UserController(Controller):
 
         Returns the complete user profile for the currently authenticated user
         based on the JWT token provided in the request.
-
-        Args:
-            request: The HTTP request containing the authenticated user
-
-        Returns:
-            The authenticated user's complete profile information
-
-        Raises:
-            HTTPException: With status 401 if the user is not authenticated or token is invalid
         """
         return request.user
 
-    @get("/{user_id:uuid}", summary="FetchUser", guards=[has_permission("users", "read")])
+    @get(
+        "/{user_id:uuid}",
+        summary="FetchUser",
+        guards=[has_permission("users", "read")],
+    )
     async def fetch(self, user_id: UUID, user_service: UserService) -> User:
         """
         Fetch a specific user by their UUID.
@@ -133,28 +110,17 @@ class UserController(Controller):
         return await user_service.get(user_id)
 
     @patch(
-        "/{user_id:uuid}", summary="UpdateUser", dto=UserUpdateDTO, guards=[has_permission("users", "update")]
+        "/{user_id:uuid}",
+        summary="UpdateUser",
+        dto=UserUpdateDTO,
+        guards=[has_permission("users", "update")],
     )
     async def update(self, user_id: UUID, data: DTOData[User], user_service: UserService) -> User:
         """
         Update an existing user's profile and roles.
 
         Updates the specified user's profile information and role assignments
-        with the provided data. Only fields included in the request will be updated,
-        allowing for partial updates. Requires the 'users:update' permission.
-
-        Args:
-            user_id: The unique identifier of the user to update
-            data: The updated user data, validated against UserUpdateDTO
-            user_service: The user service instance for business operations
-
-        Returns:
-            The updated User object with new profile information and roles
-
-        Raises:
-            NotFoundError: If no user exists with the provided UUID (handled by not_found_error_handler)
-            PermissionDeniedException: If the user lacks 'users:update' permission
-            HTTPException: If validation fails for the provided data
+        with the provided data. Requires the 'users:update' permission.
         """
         try:
             return await user_service.update_user_with_roles(user_id, data)
@@ -174,18 +140,6 @@ class UserController(Controller):
         Allows the currently authenticated user to change their password by providing
         their current password and a new password. The current password is validated
         before the change is applied.
-
-        Args:
-            data: Contains current_password and new_password fields, validated against PasswordChangeDTO
-            request: The HTTP request containing the authenticated user
-            user_service: The user service instance for business operations
-
-        Returns:
-            An empty response with status code 204 indicating successful password change
-
-        Raises:
-            HTTPException: With status 401 if the current password is incorrect, or with status 400 if the
-                new password doesn't meet requirements
         """
         user = request.user
 
@@ -198,43 +152,18 @@ class UserController(Controller):
     async def username_available(self, username: str, user_service: UserService) -> UsernameAvailable:
         """
         Check if a username is available for registration.
-
-        Validates whether a given username is available for use when creating
-        a new user account. This is typically used for real-time validation
-        in user registration forms.
-
-        Args:
-            username: The username to check for availability (provided as query parameter)
-            user_service: The user service instance for business operations
-
-        Returns:
-            An object containing the username and its availability status. Format:
-            {"username": str, "available": bool}
-
-        Raises:
-            HTTPException: If the username parameter is missing or invalid
         """
         return await user_service.check_username_availability(username)
 
-    @delete("/{user_id:uuid}", summary="DeleteUser", guards=[has_permission("users", "delete")])
+    @delete(
+        "/{user_id:uuid}",
+        summary="DeleteUser",
+        guards=[has_permission("users", "delete")],
+    )
     async def delete(self, user_id: UUID, user_service: UserService) -> None:
         """
         Delete a user account from the system.
 
-        Permanently removes a user account and all associated data from the system.
-        This action cannot be undone and may cascade to related records depending
-        on the database configuration. Requires the 'users:delete' permission.
-
-        Args:
-            user_id: The unique identifier of the user account to delete
-            user_service: The user service instance for business operations
-
-        Returns:
-            No content is returned upon successful deletion
-
-        Raises:
-            NotFoundError: If no user exists with the provided UUID (handled by not_found_error_handler)
-            PermissionDeniedException: If the user lacks 'users:delete' permission
-            HTTPException: If the deletion would violate referential integrity constraints
+        Requires the 'users:delete' permission.
         """
         await user_service.delete(user_id)

@@ -30,15 +30,16 @@ class PermissionController(Controller):
     dependencies = {"permission_service": Provide(provide_permission_service)}
     exception_handlers = {NotFoundError: not_found_error_handler}
 
-    @get("/", summary="ListPermissions", guards=[has_permission("permissions", "list")])
+    @get(
+        "/",
+        summary="ListPermissions",
+        guards=[has_permission("permissions", "list")],
+    )
     async def list(self, permission_service: PermissionService) -> Sequence[Permission]:
         """
-        List all permissions sorted by name.
+        List all permissions in the system.
 
-        Requires the 'permissions:list' permission.
-
-        Raises:
-            PermissionDeniedException: If the user lacks 'permissions:list' permission
+        This endpoint requires the 'permissions:list' permission.
         """
         return await permission_service.list()
 
@@ -52,23 +53,21 @@ class PermissionController(Controller):
         """
         Create a new permission.
 
+        Creates a new permission with the provided resource and action data.
         Requires the 'permissions:create' permission.
-
-        Raises:
-            PermissionDeniedException: If the user lacks 'permissions:create' permission
         """
         return await permission_service.create(data)
 
-    @get("/{permission_id:uuid}", summary="FetchPermission", guards=[has_permission("permissions", "read")])
+    @get(
+        "/{permission_id:uuid}",
+        summary="FetchPermission",
+        guards=[has_permission("permissions", "read")],
+    )
     async def fetch(self, permission_id: UUID, permission_service: PermissionService) -> Permission:
         """
-        Fetch a specific permission by ID.
+        Fetch a specific permission by its UUID.
 
         Requires the 'permissions:read' permission.
-
-        Raises:
-            NotFoundError: If the permission is not found (handled by not_found_error_handler)
-            PermissionDeniedException: If the user lacks 'permissions:read' permission
         """
         return await permission_service.get(permission_id)
 
@@ -85,13 +84,9 @@ class PermissionController(Controller):
         permission_service: PermissionService,
     ) -> Permission:
         """
-        Update an existing permission.
+        Update an existing permission's data.
 
         Requires the 'permissions:update' permission.
-
-        Raises:
-            NotFoundError: If the permission is not found (handled by not_found_error_handler)
-            PermissionDeniedException: If the user lacks 'permissions:update' permission
         """
         return await permission_service.update(item_id=permission_id, data=data.as_builtins())
 
@@ -103,12 +98,8 @@ class PermissionController(Controller):
     )
     async def delete(self, permission_id: UUID, permission_service: PermissionService) -> None:
         """
-        Delete a permission by ID.
+        Delete a permission from the system.
 
         Requires the 'permissions:delete' permission.
-
-        Raises:
-            NotFoundError: If the permission is not found (handled by not_found_error_handler)
-            PermissionDeniedException: If the user lacks 'permissions:delete' permission
         """
         await permission_service.delete(permission_id)

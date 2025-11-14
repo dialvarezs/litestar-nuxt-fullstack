@@ -1,9 +1,4 @@
-"""
-Role management controller module.
-
-This module provides CRUD operations for managing user roles
-in the role-based access control system.
-"""
+"""Role management controller module."""
 
 from typing import Any, Sequence
 from uuid import UUID
@@ -40,88 +35,62 @@ class RoleController(Controller):
     dependencies = {"role_service": Provide(provide_role_service)}
     exception_handlers = {NotFoundError: not_found_error_handler}
 
-    @get("/", summary="ListRoles", guards=[has_permission("roles", "list")])
+    @get(
+        "/",
+        summary="ListRoles",
+        guards=[has_permission("roles", "list")],
+    )
     async def list(self, role_service: RoleService) -> Sequence[Role]:
         """
-        Get all roles in the system.
+        List all roles in the system.
 
-        Requires the 'roles:list' permission.
-
-        Args:
-            role_service: Role service for business operations
-
-        Returns:
-            List of all role objects
-
-        Raises:
-            PermissionDeniedException: If the user lacks 'roles:list' permission
+        This endpoint requires the 'roles:list' permission.
         """
         return await role_service.list()
 
-    @post("/", summary="CreateRole", dto=RoleCreateDTO, guards=[has_permission("roles", "create")])
+    @post(
+        "/",
+        summary="CreateRole",
+        dto=RoleCreateDTO,
+        guards=[has_permission("roles", "create")],
+    )
     async def create(self, data: Role, role_service: RoleService) -> Role:
         """
-        Create a new role.
+        Create a new role with associated permissions.
 
-        Requires the 'roles:create' permission.
-
-        Args:
-            data: Role data for creation
-            role_service: Role service for business operations
-
-        Returns:
-            The created role object
-
-        Raises:
-            PermissionDeniedException: If the user lacks 'roles:create' permission
-            HTTPException: If validation fails
+        Creates a new role with the provided data and assigns any specified
+        permissions. Requires the 'roles:create' permission.
         """
         try:
             return await role_service.create_role_with_permissions(data)
         except ValueError as exc:
             raise HTTPException(detail=str(exc), status_code=400) from exc
 
-    @get("/{role_id:uuid}", summary="FetchRole", guards=[has_permission("roles", "read")])
+    @get(
+        "/{role_id:uuid}",
+        summary="FetchRole",
+        guards=[has_permission("roles", "read")],
+    )
     async def fetch(self, role_id: UUID, role_service: RoleService) -> Role:
         """
-        Get a specific role by ID.
+        Fetch a specific role by its UUID.
 
         Requires the 'roles:read' permission.
-
-        Args:
-            role_id: UUID of the role to retrieve
-            role_service: Role service for business operations
-
-        Returns:
-            The requested role object
-
-        Raises:
-            NotFoundError: If the role is not found (handled by not_found_error_handler)
-            PermissionDeniedException: If the user lacks 'roles:read' permission
         """
         return await role_service.get(role_id)
 
     @patch(
-        "/{role_id:uuid}", summary="UpdateRole", dto=RoleUpdateDTO, guards=[has_permission("roles", "update")]
+        "/{role_id:uuid}",
+        summary="UpdateRole",
+        dto=RoleUpdateDTO,
+        guards=[has_permission("roles", "update")],
     )
     async def update(self, role_id: UUID, data: DTOData[Role], role_service: RoleService) -> Role:
         """
-        Update an existing role.
+        Update an existing role's data and permissions.
 
-        Requires the 'roles:update' permission.
-
-        Args:
-            role_id: UUID of the role to update
-            data: Updated role data
-            role_service: Role service for business operations
-
-        Returns:
-            The updated role object
-
-        Raises:
-            NotFoundError: If the role is not found (handled by not_found_error_handler)
-            PermissionDeniedException: If the user lacks 'roles:update' permission
-            HTTPException: If validation fails
+        Updates the specified role's information and permission assignments
+        with the provided data. Requires the 'roles:update' permission.
         """
         try:
             return await role_service.update_role_with_permissions(role_id, data.as_builtins())
