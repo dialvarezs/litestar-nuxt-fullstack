@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^6.2.0",
-    "@iconify-json/material-symbols": "^1.2.44",
+    "@iconify-json/material-symbols": "^1.2.46",
     "@iconify-json/mdi": "^1.2.3",
     "@nuxt/eslint": "^1.10.0",
     "@nuxt/icon": "^2.1.0",
