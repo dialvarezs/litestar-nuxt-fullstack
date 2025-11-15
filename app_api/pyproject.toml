@@ -10,15 +10,15 @@ dependencies = [
     "asyncpg>=0.30.0",
     "litestar[standard,jwt,sqlalchemy,structlog]>=2.18.0",
     "pwdlib[argon2]>=0.3.0",
-    "pydantic-settings>=2.11.0",
+    "pydantic-settings>=2.12.0",
 ]
 
 [dependency-groups]
 dev = [
     "pre-commit>=4.4.0",
-    "pyrefly>=0.40.0",
-    "pytest>=8.4.0",
-    "pytest-asyncio>=1.2.0",
+    "pyrefly>=0.41.0",
+    "pytest>=9.0.0",
+    "pytest-asyncio>=1.3.0",
     "pytest-cov>=6.2.0",
     "pytest-databases[postgres]>=0.15.0",
     "pytest-pretty>=1.3.0",
