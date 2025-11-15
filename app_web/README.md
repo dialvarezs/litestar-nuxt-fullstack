@@ -1,75 +1,64 @@
-# Nuxt Minimal Starter
+# Nuxt 4 Frontend
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Modern frontend application built with Nuxt 4, TypeScript, PrimeVue, and Tailwind CSS.
 
-## Setup
+## Requirements
+- [bun](https://bun.sh/)
 
-Make sure to install dependencies:
-
-```bash
-# npm
-npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
+## Quick Start
 
 ```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
+bun install              # Install dependencies
+cp .env{.example,}       # Copy environment config (edit if necessary)
+bun run dev              # Run development server
 ```
 
-## Production
-
-Build the application for production:
+## Development Commands
 
 ```bash
-# npm
-npm run build
+# Code quality
+bun run typecheck  # Type checking with Vue TypeScript
+bun run lint       # Lint with ESLint
+bun run lint:fix   # Auto-fix linting issues
 
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
+# Build and preview
+bun run build      # Production build
+bun run preview    # Preview production build
 ```
 
-Locally preview production build:
+## Architecture
 
-```bash
-# npm
-npm run preview
+### Structure
+- **nuxt.config.ts** - Nuxt configuration and module setup
+- **app/plugins/api.ts** - API client configuration with automatic case conversion
+- **app/stores/** - Pinia state management stores
+- **app/composables/api/** - API layer composables by domain
+- **app/components/** - Vue components (admin/, base/)
+- **app/pages/** - File-based routing (admin/, auth/)
+- **server/api/** - Server endpoints (auth/, proxy/)
 
-# pnpm
-pnpm preview
+### API Communication
+Dual-mode API system for seamless client/server requests:
+- **Client-side**: Routes through `/api` proxy endpoints (to avoids CORS)
+- **Server-side**: Direct connection to backend API
+- Automatic snake_case/camelCase conversion in both directions
 
-# yarn
-yarn preview
+### Authentication
+- HttpOnly cookie-based auth with JWT tokens
+- Token stored in `auth-token` cookie
+- Login flow: `/api/auth/login` → backend → token extraction → cookie storage
+- Automatic 401 handling with logout and redirect
+- Global middleware protection for authenticated views
 
-# bun
-bun run preview
-```
+### State Management
+- **Composable API layer** (`useXxxApi`) for backend communication
+- **Store layer** (`useXxxStore`) for state management
+- Automatic loading/error state handling
+- CRUD operations with optimistic updates
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+## Configuration
+
+Edit `.env` or set environment variables:
+- `NUXT_PUBLIC_API_BASE_URL` - Backend API URL (default: `http://localhost:8000`)
+
+**Theme:** PrimeVue with Aura preset and dark mode support. Theme preference stored in localStorage.
