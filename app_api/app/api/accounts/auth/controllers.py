@@ -22,7 +22,7 @@ class AuthController(Controller):
     """
 
     path = "/auth"
-    tags = ["accounts/ auth"]
+    tags = ["accounts / auth"]
 
     @post(
         "/login",
