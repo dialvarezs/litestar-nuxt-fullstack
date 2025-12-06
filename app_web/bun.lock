@@ -23,9 +23,9 @@
         "@iconify-json/mdi": "^1.2.3",
         "@nuxt/eslint": "^1.11.0",
         "@nuxt/icon": "^2.1.0",
-        "@nuxtjs/tailwindcss": "^7.0.0-beta.1",
         "@pinia/nuxt": "^0.11.3",
         "@primevue/nuxt-module": "^4.5.0",
+        "@tailwindcss/vite": "^4.1.17",
         "@vueuse/nuxt": "^14.1.0",
         "eslint": "^9.39.1",
         "eslint-plugin-perfectionist": "^4.15.1",
@@ -37,8 +37,6 @@
     },
   },
   "packages": {
-    "@alloc/quick-lru": ["@alloc/quick-lru@5.2.0", "", {}, "sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw=="],
-
     "@antfu/eslint-config": ["@antfu/eslint-config@6.2.0", "", { "dependencies": { "@antfu/install-pkg": "^1.1.0", "@clack/prompts": "^0.11.0", "@eslint-community/eslint-plugin-eslint-comments": "^4.5.0", "@eslint/markdown": "^7.5.0", "@stylistic/eslint-plugin": "^5.5.0", "@typescript-eslint/eslint-plugin": "^8.46.2", "@typescript-eslint/parser": "^8.46.2", "@vitest/eslint-plugin": "^1.4.0", "ansis": "^4.2.0", "cac": "^6.7.14", "eslint-config-flat-gitignore": "^2.1.0", "eslint-flat-config-utils": "^2.1.4", "eslint-merge-processors": "^2.0.0", "eslint-plugin-antfu": "^3.1.1", "eslint-plugin-command": "^3.3.1", "eslint-plugin-import-lite": "^0.3.0", "eslint-plugin-jsdoc": "^61.1.11", "eslint-plugin-jsonc": "^2.21.0", "eslint-plugin-n": "^17.23.1", "eslint-plugin-no-only-tests": "^3.3.0", "eslint-plugin-perfectionist": "^4.15.1", "eslint-plugin-pnpm": "^1.3.0", "eslint-plugin-regexp": "^2.10.0", "eslint-plugin-toml": "^0.12.0", "eslint-plugin-unicorn": "^62.0.0", "eslint-plugin-unused-imports": "^4.3.0", "eslint-plugin-vue": "^10.5.1", "eslint-plugin-yml": "^1.19.0", "eslint-processor-vue-blocks": "^2.0.0", "globals": "^16.4.0", "jsonc-eslint-parser": "^2.4.1", "local-pkg": "^1.1.2", "parse-gitignore": "^2.0.0", "toml-eslint-parser": "^0.10.0", "vue-eslint-parser": "^10.2.0", "yaml-eslint-parser": "^1.3.0" }, "peerDependencies": { "@eslint-react/eslint-plugin": "^2.0.1", "@next/eslint-plugin-next": ">=15.0.0", "@prettier/plugin-xml": "^3.4.1", "@unocss/eslint-plugin": ">=0.50.0", "astro-eslint-parser": "^1.0.2", "eslint": "^9.10.0", "eslint-plugin-astro": "^1.2.0", "eslint-plugin-format": ">=0.1.0", "eslint-plugin-jsx-a11y": ">=6.10.2", "eslint-plugin-react-hooks": "^7.0.0", "eslint-plugin-react-refresh": "^0.4.19", "eslint-plugin-solid": "^0.14.3", "eslint-plugin-svelte": ">=2.35.1", "eslint-plugin-vuejs-accessibility": "^2.4.1", "prettier-plugin-astro": "^0.14.0", "prettier-plugin-slidev": "^1.0.5", "svelte-eslint-parser": ">=0.37.0" }, "optionalPeers": ["@eslint-react/eslint-plugin", "@next/eslint-plugin-next", "@prettier/plugin-xml", "@unocss/eslint-plugin", "astro-eslint-parser", "eslint-plugin-astro", "eslint-plugin-format", "eslint-plugin-jsx-a11y", "eslint-plugin-react-hooks", "eslint-plugin-react-refresh", "eslint-plugin-solid", "eslint-plugin-svelte", "eslint-plugin-vuejs-accessibility", "prettier-plugin-astro", "prettier-plugin-slidev", "svelte-eslint-parser"], "bin": { "eslint-config": "bin/index.js" } }, "sha512-ksasd+mJk441HHodwPh3Nhmwo9jSHUmgQyfTxMQM05U7SjDS0fy2KnXnPx0Vhc/CqKiJnx8wGpQCCJibyASX9Q=="],
 
     "@antfu/install-pkg": ["@antfu/install-pkg@1.1.0", "", { "dependencies": { "package-manager-detector": "^1.3.0", "tinyexec": "^1.0.1" } }, "sha512-MGQsmw10ZyI+EJo45CdSER4zEb+p31LpDAFp2Z3gkSd1yqVZGi0Ebx++YTEMonJy4oChEMLsxZ64j8FH6sSqtQ=="],
@@ -301,8 +299,6 @@
 
     "@nuxt/vite-builder": ["@nuxt/vite-builder@4.2.1", "", { "dependencies": { "@nuxt/kit": "4.2.1", "@rollup/plugin-replace": "^6.0.3", "@vitejs/plugin-vue": "^6.0.1", "@vitejs/plugin-vue-jsx": "^5.1.1", "autoprefixer": "^10.4.21", "consola": "^3.4.2", "cssnano": "^7.1.2", "defu": "^6.1.4", "esbuild": "^0.25.12", "escape-string-regexp": "^5.0.0", "exsolve": "^1.0.7", "get-port-please": "^3.2.0", "h3": "^1.15.4", "jiti": "^2.6.1", "knitwork": "^1.2.0", "magic-string": "^0.30.21", "mlly": "^1.8.0", "mocked-exports": "^0.1.1", "pathe": "^2.0.3", "pkg-types": "^2.3.0", "postcss": "^8.5.6", "rollup-plugin-visualizer": "^6.0.5", "seroval": "^1.3.2", "std-env": "^3.10.0", "ufo": "^1.6.1", "unenv": "^2.0.0-rc.24", "vite": "^7.2.1", "vite-node": "^5.0.0", "vite-plugin-checker": "^0.11.0", "vue-bundle-renderer": "^2.2.0" }, "peerDependencies": { "nuxt": "4.2.1", "rolldown": "^1.0.0-beta.38", "vue": "^3.3.4" }, "optionalPeers": ["rolldown"] }, "sha512-SuBxCtGrHcbgrtzHwJgLe0pBXWw2T9RFQx9JQ7A3dE9RjBhzjaxtmjVHx7vtq6DCGi0d0WlW1Z1lBZUDaXy8WA=="],
 
-    "@nuxtjs/tailwindcss": ["@nuxtjs/tailwindcss@7.0.0-beta.1", "", { "dependencies": { "@nuxt/kit": "^4.1.0", "@tailwindcss/postcss": "^4.1.12", "@tailwindcss/vite": "^4.1.12", "exsolve": "^1.0.7", "pathe": "^2.0.3", "tailwindcss": "^4.1.12" } }, "sha512-oaILm+parts21JuGwntiIwyjJAqfumfeZk9/SXsBhss5Pqfn1gSA6Msxe7cd+QLXZtpXfj4mgv5DhFUcMmSJiA=="],
-
     "@oxc-minify/binding-android-arm64": ["@oxc-minify/binding-android-arm64@0.96.0", "", { "os": "android", "cpu": "arm64" }, "sha512-lzeIEMu/v6Y+La5JSesq4hvyKtKBq84cgQpKYTYM/yGuNk2tfd5Ha31hnC+mTh48lp/5vZH+WBfjVUjjINCfug=="],
 
     "@oxc-minify/binding-darwin-arm64": ["@oxc-minify/binding-darwin-arm64@0.96.0", "", { "os": "darwin", "cpu": "arm64" }, "sha512-i0LkJAUXb4BeBFrJQbMKQPoxf8+cFEffDyLSb7NEzzKuPcH8qrVsnEItoOzeAdYam8Sr6qCHVwmBNEQzl7PWpw=="],
@@ -560,8 +556,6 @@
     "@tailwindcss/oxide-win32-arm64-msvc": ["@tailwindcss/oxide-win32-arm64-msvc@4.1.17", "", { "os": "win32", "cpu": "arm64" }, "sha512-JU5AHr7gKbZlOGvMdb4722/0aYbU+tN6lv1kONx0JK2cGsh7g148zVWLM0IKR3NeKLv+L90chBVYcJ8uJWbC9A=="],
 
     "@tailwindcss/oxide-win32-x64-msvc": ["@tailwindcss/oxide-win32-x64-msvc@4.1.17", "", { "os": "win32", "cpu": "x64" }, "sha512-SKWM4waLuqx0IH+FMDUw6R66Hu4OuTALFgnleKbqhgGU30DY20NORZMZUKgLRjQXNN2TLzKvh48QXTig4h4bGw=="],
-
-    "@tailwindcss/postcss": ["@tailwindcss/postcss@4.1.17", "", { "dependencies": { "@alloc/quick-lru": "^5.2.0", "@tailwindcss/node": "4.1.17", "@tailwindcss/oxide": "4.1.17", "postcss": "^8.4.41", "tailwindcss": "4.1.17" } }, "sha512-+nKl9N9mN5uJ+M7dBOOCzINw94MPstNR/GtIhz1fpZysxL/4a+No64jCBD6CPN+bIHWFx3KWuu8XJRrj/572Dw=="],
 
     "@tailwindcss/vite": ["@tailwindcss/vite@4.1.17", "", { "dependencies": { "@tailwindcss/node": "4.1.17", "@tailwindcss/oxide": "4.1.17", "tailwindcss": "4.1.17" }, "peerDependencies": { "vite": "^5.2.0 || ^6 || ^7" } }, "sha512-4+9w8ZHOiGnpcGI6z1TVVfWaX/koK7fKeSYF3qlYg2xpBtbteP2ddBxiarL+HVgfSJGeK5RIxRQmKm4rTJJAwA=="],
 
