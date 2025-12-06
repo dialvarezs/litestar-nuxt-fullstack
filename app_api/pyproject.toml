@@ -1,5 +1,5 @@
 [project]
-name = "app-backend"
+name = "app-api"
 version = "0.1.0"
 description = "Backend API for full-stack application"
 authors = []
