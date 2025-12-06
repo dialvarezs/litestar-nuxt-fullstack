@@ -13,26 +13,26 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
-    "@primeuix/themes": "^2.0.1",
-    "@primevue/forms": "^4.5.0",
+    "@primeuix/themes": "^2.0.2",
+    "@primevue/forms": "^4.5.1",
     "@vueuse/core": "^14.1.0",
     "change-case": "^5.4.4",
     "date-fns": "^4.1.0",
     "nuxt": "^4.2.1",
     "pinia": "^3.0.4",
-    "primevue": "^4.5.0",
+    "primevue": "^4.5.1",
     "valibot": "^1.2.0",
     "vue": "^3.5.25",
     "vue-router": "^4.6.3"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^6.2.0",
-    "@iconify-json/material-symbols": "^1.2.48",
+    "@antfu/eslint-config": "^6.4.2",
+    "@iconify-json/material-symbols": "^1.2.49",
     "@iconify-json/mdi": "^1.2.3",
     "@nuxt/eslint": "^1.11.0",
     "@nuxt/icon": "^2.1.0",
     "@pinia/nuxt": "^0.11.3",
-    "@primevue/nuxt-module": "^4.5.0",
+    "@primevue/nuxt-module": "^4.5.1",
     "@tailwindcss/vite": "^4.1.17",
     "@vueuse/nuxt": "^14.1.0",
     "eslint": "^9.39.1",
@@ -40,6 +40,6 @@
     "stylelint": "^16.26.1",
     "tailwindcss-primeui": "^0.6.1",
     "typescript": "^5.9.3",
-    "vue-tsc": "^3.1.5"
+    "vue-tsc": "^3.1.6"
   }
 }
