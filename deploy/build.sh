@@ -6,7 +6,7 @@ date=$(date '+%Y%m%d')
 build_image() {
   local target=$1
   local dir=$2
-  podman build --pull=newer -t "${tag_prefix}_${target}:${date}" -t "${tag_prefix}_${target}:latest" "${dir}/"
+  podman build --pull=newer -t "${tag_prefix}_${target}:${date}" -t "${tag_prefix}_${target}:latest" "${dir}"
 }
 
 build_target=${1:-all}
@@ -23,7 +23,7 @@ case $build_target in
     build_image "web" ../app_web/
     ;;
   *)
-    echo "Uso: $0 [api|web|all]"
+    echo "Usage: $0 [api|web|all]"
     exit 1
     ;;
 esac
