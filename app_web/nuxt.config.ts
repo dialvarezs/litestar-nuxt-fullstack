@@ -36,6 +36,12 @@ export default defineNuxtConfig({
       tailwindcss(),
     ],
   },
+  nitro: {
+    compressPublicAssets: true,
+    prerender: {
+      crawlLinks: true,
+    },
+  },
   eslint: {
     config: {
       standalone: false,
