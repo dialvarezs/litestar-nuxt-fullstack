@@ -44,6 +44,7 @@ spec:
       securityContext:
         runAsUser: 921
         runAsGroup: 921
+        readOnlyRootFilesystem: true
       ports:
         - containerPort: 8000
           hostPort: 10101
@@ -51,6 +52,8 @@ spec:
         - mountPath: /app/config.toml:z
           name: app-api-config
           readOnly: true
+        - mountPath: /tmp:Z
+          name: app-api-tmp
 
     - name: web
       image: app_web:latest
@@ -60,9 +63,13 @@ spec:
       securityContext:
         runAsUser: 922
         runAsGroup: 922
+        readOnlyRootFilesystem: true
       ports:
         - containerPort: 3000
           hostPort: 10102
+      volumeMounts:
+        - mountPath: /tmp:Z
+          name: app-web-tmp
 
   volumes:
     - name: app-db-init
@@ -77,4 +84,8 @@ spec:
       persistentVolumeClaim:
         claimName: app-db-pvc
     - name: app-db-tmp
+      emptyDir: { }
+    - name: app-api-tmp
+      emptyDir: { }
+    - name: app-web-tmp
       emptyDir: { }

@@ -5,6 +5,6 @@ Description=App pod
 WantedBy=multi-user.target default.target
 
 [Kube]
-Yaml=/home/user/app/deploy/app-pod.yaml
+Yaml=/home/app/services/litestar-nuxt-fullstack/deploy/app-pod.yaml
 Network=app.network
 SetWorkingDirectory=yaml
