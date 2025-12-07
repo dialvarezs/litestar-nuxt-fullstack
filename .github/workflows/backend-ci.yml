@@ -25,6 +25,9 @@ jobs:
       with:
         python-version: '3.13'
 
+    - name: Setup just
+      uses: extractions/setup-just@v3
+
     - name: Install uv
       uses: astral-sh/setup-uv@v7
       with:
@@ -34,6 +37,14 @@ jobs:
       working-directory: ./app_api
       run: uv sync
 
+    - name: Typecheck with pyrefly
+      working-directory: ./app_api
+      run: just pyrefly
+
+    - name: Typecheck with ty
+      working-directory: ./app_api
+      run: just ty
+
     - name: Run tests
       working-directory: ./app_api
-      run: PYTHONPATH=. uv run pytest -v
+      run: just test -v
