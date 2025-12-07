@@ -38,3 +38,8 @@ The backend API runs at `http://localhost:8000` and the frontend at `http://loca
 
 - **Backend**: See [app_api/README.md](app_api/README.md) for architecture, commands, and configuration
 - **Frontend**: See [app_web/README.md](app_web/README.md) for architecture, commands, and configuration
+
+## Deployment
+
+Includes deployment setup using rootless containers with Podman + Quadlet.
+See [deploy/README.md](deploy/README.md) for detailed information.

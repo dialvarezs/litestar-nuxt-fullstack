@@ -1,41 +1,54 @@
-# How to deploy with Podman
+# Deployment with Podman
 
-## 1. Containers
+- Rootless Podman + Quadlet is used to run the API, frontend, and Postgres in a single pod.
+- Default exposed ports are 10101 (API) and 10102 (web).
+- Run everything as a non-root user and put a reverse proxy (Caddy/Traefik/NGINX) in front.
+- The frontend proxies traffic to the API inside the pod, so only the web port needs to be published for a functional app.
 
-1. Use the `build.sh` script to build the container images. You can specify `api`, `web`, or `all` (default)
-   as a parameter.
+> All paths below assume you run commands from `deploy/` so the hostPath mounts in `app-pod.yaml` resolve correctly.
 
-## 2. Secrets
+## Prerequisites
 
-1. Copy the example secrets YAML: `cp app-secrets{.example,}.yaml`.
-2. Set restricted permissions on the secrets file: `chmod 600 app-secrets.yaml`.
-3. Fill in the required fields in `app-secrets.yaml`:
-    - `POSTGRES_USER`: Admin username for the Postgres container.
-    - `POSTGRES_PASSWORD`: Admin password for the Postgres container.
-    - `POSTGRES_DB`: Name of the Postgres database.
-    - `DATABASE_URL`: Full connection string for the database.
-4. Deploy the secrets: `podman kube play app-secrets.yaml`.
+- Podman with Quadlet support (systemd user services enabled).
+- `sudo loginctl enable-linger <user>` so the pod can start automatically at boot.
+- `sudo systemctl enable tmp.mount` to avoid Podman boot ID errors.
 
-## 3. Pod
+## 1) Build container images
 
-1. If you need to restore a database backup, create the directory `./db_init/` and place the SQL script
-   inside.
-2. Copy API example config: `cp ../app_api/config.example.toml api_config.toml` and set at least `secret_key`.
-3. Start the pod with `podman kube play app-pod.yaml`.
-4. If everything works correctly, stop the pod with `podman kube down app-pod.yaml` (the service will start
-   the pod later).
+`./build.sh [api|web|all]` (default `all`) builds images tagged `app_api:latest` and `app_web:latest`.
 
-## 4. Service
+## 2) Secrets
 
-1. Ensure that the `Yaml` field in `app-pod.kube` points to the correct path of the pod YAML file.
-2. Copy `app-pod.kube` and `app.network` to `~/.config/containers/systemd` (create the directory if it doesn't
-   exist).
-3. Reload systemd with `systemctl --user daemon-reload`.
-4. Start the pod with `systemctl --user start app-pod.service`.
-   If the service doesn't exist, check the unit creation with `/usr/libexec/podman/quadlet --user --dryrun`.
+1) Copy and lock down secrets: `cp app-secrets{.example,}.yaml && chmod 600 app-secrets.yaml`
+2) Edit `app-secrets.yaml`:
+   - `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`: Postgres credentials and database name.
+   - `DATABASE_URL`: Full SQLAlchemy URL (e.g., `postgresql+asyncpg://pguser:pgsecret@db:5432/app`).
+3) Create the secret: `podman kube play app-secrets.yaml`
 
-## 5. System Configuration
+## 3) API config + optional DB init
 
-1. **Enable tmp.mount** (prevents Podman boot ID errors): `sudo systemctl enable tmp.mount`
-2. **Enable user lingering** (allows user services to start at boot): `sudo loginctl enable-linger <username>`
-   Verify lingering with `loginctl show-user <username> | grep Linger` (should output `Linger=yes`)
+- Copy API config: `cp ../app_api/config.example.toml api-config.toml` and set at least `secret_key` (plus any other overrides you need).
+- Optional DB seed/restore: create `./db_init/` and drop SQL files there; Podman runs them on first start.
+
+## 4) First pod run (validate)
+
+1) Ensure a volume exists for Postgres data: `podman volume create app-db-pvc`
+2) Start the pod for a test run: `podman kube play app-pod.yaml`
+   - Confirms the hostPath mounts (`api-config.toml`, `db_init/`) and ports are correct.
+3) Stop the test pod once verified: `podman kube down app-pod.yaml`
+
+## 5) Quadlet service
+
+1) Edit `app-pod.kube` so `Yaml=` points to your actual repo path (current value is a placeholder).
+2) Copy `app-pod.kube` and `app.network` into `~/.config/containers/systemd` (create the directory if needed).
+3) Reload systemd: `systemctl --user daemon-reload`
+4) Start and enable the service:
+   - `systemctl --user start app-pod.service`
+   - `systemctl --user enable app-pod.service`
+5) If the unit fails to appear, inspect the generated systemd with `/usr/libexec/podman/quadlet --user --dryrun`
+
+## Notes and verification
+
+- Check status/logs: `systemctl --user status app-pod.service` and `journalctl --user -u app-pod.service -f`
+- Default ports: API `10101`, web `10102`; adjust host ports in `app-pod.yaml` if needed.
+- If you change image tags, also update the `image:` fields in `app-pod.yaml`.
