@@ -12,10 +12,14 @@ WORKDIR /app
 
 COPY --from=build /app/.output /app/.output
 
+RUN adduser --uid 922 --system --no-create-home app
+
 EXPOSE 3000
 
 ENV HOST=0.0.0.0
 ENV PORT=3000
 ENV NODE_ENV=production
+
+USER app
 
 CMD ["bun", "run", ".output/server/index.mjs"]
