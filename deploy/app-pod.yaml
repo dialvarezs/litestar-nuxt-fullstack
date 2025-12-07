@@ -1,0 +1,73 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app
+data:
+  TZ: UTC
+  ALLOWED_HOSTS: "*"
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: app
+  name: app-pod
+spec:
+  containers:
+    - name: db
+      image: postgres:18
+      envFrom:
+        - configMapRef:
+            name: app
+        - secretRef:
+            name: app
+      securityContext:
+        runAsUser: 920
+        runAsGroup: 920
+      ports:
+        - containerPort: 5432
+      volumeMounts:
+        - mountPath: /docker-entrypoint-initdb.d/:z
+          name: app-db-init
+          readOnly: true
+        - mountPath: /var/lib/postgresql/data:Z,U
+          name: app-db-pvc
+        - mountPath: /var/run/postgresql:Z
+          name: app-db-tmp
+
+    - name: api
+      image: app_api:latest
+      envFrom:
+        - configMapRef:
+            name: app
+        - secretRef:
+            name: app
+      securityContext:
+        runAsUser: 921
+        runAsGroup: 921
+      ports:
+        - containerPort: 8000
+          hostPort: 10101
+
+    - name: web
+      image: app_web:latest
+      envFrom:
+        - configMapRef:
+            name: app
+      securityContext:
+        runAsUser: 922
+        runAsGroup: 922
+      ports:
+        - containerPort: 3000
+          hostPort: 10102
+
+  volumes:
+    - name: app-db-init
+      hostPath:
+        path: ./db_init/
+        type: DirectoryOrCreate
+    - name: app-db-pvc
+      persistentVolumeClaim:
+        claimName: app-db-pvc
+    - name: app-db-tmp
+      emptyDir: { }

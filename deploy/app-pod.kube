@@ -1,0 +1,10 @@
+[Unit]
+Description=App pod
+
+[Install]
+WantedBy=multi-user.target default.target
+
+[Kube]
+Yaml=/home/user/app/deploy/app-pod.yaml
+Network=app.network
+SetWorkingDirectory=yaml
