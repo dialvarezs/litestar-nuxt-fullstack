@@ -1,5 +1,4 @@
-"""
-Application configuration module.
+"""Application configuration module.
 
 This module defines the application settings using Pydantic BaseSettings
 for configuration management with support for TOML files.
@@ -17,8 +16,7 @@ from pydantic_settings import (
 
 
 class Settings(BaseSettings):
-    """
-    Application settings configuration class.
+    """Application settings configuration class.
 
     Manages all configuration values for the application including database,
     security, and CORS settings. Values can be loaded from TOML files,
@@ -44,14 +42,16 @@ class Settings(BaseSettings):
         dotenv_settings: PydanticBaseSettingsSource,
         file_secret_settings: PydanticBaseSettingsSource,
     ) -> tuple[PydanticBaseSettingsSource, ...]:
-        """
-        Customize the sources for settings loading.
+        """Customize the sources for settings loading.
 
         Prioritizes TOML config file, then init settings, then environment variables.
 
         Returns:
             Tuple of settings sources in priority order
+
         """
+        _ = dotenv_settings
+        _ = file_secret_settings
         return (
             TomlConfigSettingsSource(settings_cls, toml_file=Path("config.toml").resolve()),
             init_settings,

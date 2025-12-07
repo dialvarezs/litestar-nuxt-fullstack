@@ -1,5 +1,4 @@
-"""
-Account-related database models.
+"""Account-related database models.
 
 This module defines the database models for user authentication and authorization,
 including User, Role, and UserRole association models.
@@ -7,8 +6,8 @@ including User, Role, and UserRole association models.
 
 from __future__ import annotations
 
-from datetime import datetime
-from uuid import UUID
+from datetime import datetime  # noqa: TC003
+from uuid import UUID  # noqa: TC003
 
 from advanced_alchemy.base import AdvancedDeclarativeBase, CommonTableAttributes, UUIDv7AuditBase
 from sqlalchemy import ForeignKey, String
@@ -29,7 +28,10 @@ class User(UUIDv7AuditBase):
     last_login: Mapped[datetime | None]
 
     roles: Mapped[list[Role]] = relationship(
-        secondary="accounts_users_roles", back_populates="users", lazy="selectin", order_by="Role.name"
+        secondary="accounts_users_roles",
+        back_populates="users",
+        lazy="selectin",
+        order_by="Role.name",
     )
 
 
@@ -43,7 +45,9 @@ class Role(UUIDv7AuditBase):
     is_active: Mapped[bool] = mapped_column(default=True, server_default="1")
 
     users: Mapped[list[User]] = relationship(
-        secondary="accounts_users_roles", back_populates="roles", lazy="noload"
+        secondary="accounts_users_roles",
+        back_populates="roles",
+        lazy="noload",
     )
     permissions: Mapped[list[Permission]] = relationship(
         secondary="accounts_roles_permissions",

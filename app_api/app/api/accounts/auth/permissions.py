@@ -1,5 +1,4 @@
-"""
-Permission checking utilities.
+"""Permission checking utilities.
 
 This module provides helper functions for programmatically checking user permissions
 within application code, complementing the guard-based approach for route handlers.
@@ -9,8 +8,7 @@ from app.models.accounts import User
 
 
 def user_has_permission(user: User, resource: str, action: str) -> bool:
-    """
-    Check if a user has a specific permission.
+    """Check if a user has a specific permission.
 
     Args:
         user: The user to check
@@ -24,6 +22,7 @@ def user_has_permission(user: User, resource: str, action: str) -> bool:
         if user_has_permission(current_user, "users", "delete"):
             # Perform deletion
             ...
+
     """
     for role in user.roles:
         if not role.is_active:
@@ -35,8 +34,7 @@ def user_has_permission(user: User, resource: str, action: str) -> bool:
 
 
 def user_has_any_permission(user: User, *permissions: tuple[str, str]) -> bool:
-    """
-    Check if a user has any of the specified permissions.
+    """Check if a user has any of the specified permissions.
 
     Args:
         user: The user to check
@@ -49,14 +47,14 @@ def user_has_any_permission(user: User, *permissions: tuple[str, str]) -> bool:
         if user_has_any_permission(current_user, ("users", "read"), ("users", "list")):
             # Show user list
             ...
+
     """
     user_permissions = get_user_permissions(user)
     return any((resource, action) in user_permissions for resource, action in permissions)
 
 
 def user_has_all_permissions(user: User, *permissions: tuple[str, str]) -> bool:
-    """
-    Check if a user has all of the specified permissions.
+    """Check if a user has all of the specified permissions.
 
     Args:
         user: The user to check
@@ -69,14 +67,14 @@ def user_has_all_permissions(user: User, *permissions: tuple[str, str]) -> bool:
         if user_has_all_permissions(current_user, ("users", "update"), ("roles", "update")):
             # Allow complex operation
             ...
+
     """
     user_permissions = get_user_permissions(user)
     return all((resource, action) in user_permissions for resource, action in permissions)
 
 
 def get_user_permissions(user: User) -> set[tuple[str, str]]:
-    """
-    Get all permissions for a user as (resource, action) tuples.
+    """Get all permissions for a user as (resource, action) tuples.
 
     Args:
         user: The user to get permissions for
@@ -90,6 +88,7 @@ def get_user_permissions(user: User) -> set[tuple[str, str]]:
         if ("users", "delete") in permissions:
             # User can delete
             ...
+
     """
     permissions = set()
     for role in user.roles:
@@ -102,8 +101,7 @@ def get_user_permissions(user: User) -> set[tuple[str, str]]:
 
 
 def user_has_role(user: User, *role_names: str) -> bool:
-    """
-    Check if a user has any of the specified roles.
+    """Check if a user has any of the specified roles.
 
     Args:
         user: The user to check
@@ -116,6 +114,7 @@ def user_has_role(user: User, *role_names: str) -> bool:
         if user_has_role(current_user, "admin", "superuser"):
             # Show admin features
             ...
+
     """
     user_role_names = {role.name for role in user.roles if role.is_active}
     return any(role_name in user_role_names for role_name in role_names)

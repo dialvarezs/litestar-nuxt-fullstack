@@ -1,4 +1,6 @@
-from typing import Sequence
+"""Permission service module for business logic and data access."""
+
+from collections.abc import Sequence
 from uuid import UUID
 
 from advanced_alchemy.filters import CollectionFilter
@@ -13,7 +15,7 @@ class PermissionService(SQLAlchemyAsyncRepositoryService[Permission, PermissionR
     """Business logic wrapper for permission operations."""
 
     repository_type = PermissionRepository
-    match_fields = ["id", "name"]
+    match_fields = ("id", "name")
 
     async def list_by_ids(self, permission_ids: list[UUID | str]) -> Sequence[Permission]:
         """Fetch a set of permissions by identifier.
@@ -24,8 +26,8 @@ class PermissionService(SQLAlchemyAsyncRepositoryService[Permission, PermissionR
         Returns:
             Ordered list of :class:`~app.models.accounts.Permission` records that
             match the provided identifiers.
-        """
 
+        """
         return await self.list(CollectionFilter(field_name="id", values=permission_ids))
 
 
@@ -37,6 +39,6 @@ async def provide_permission_service(db_session: AsyncSession) -> PermissionServ
 
     Returns:
         Configured :class:`PermissionService`.
-    """
 
+    """
     return PermissionService(session=db_session)

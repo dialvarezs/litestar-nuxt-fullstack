@@ -1,6 +1,7 @@
 """Permission management controller module."""
 
-from typing import Any, Sequence
+from collections.abc import Sequence
+from typing import Any, ClassVar
 from uuid import UUID
 
 from advanced_alchemy.exceptions import NotFoundError
@@ -17,7 +18,6 @@ from .services import PermissionService, provide_permission_service
 
 def not_found_error_handler(_: Request[Any, Any, Any], __: NotFoundError) -> Response[Any]:
     """Handle permission not found errors by returning a 404 response."""
-
     return Response(status_code=404, content={"status_code": 404, "detail": "Permission not found"})
 
 
@@ -25,10 +25,10 @@ class PermissionController(Controller):
     """Controller providing CRUD endpoints for permissions."""
 
     path = "/permissions"
-    tags = ["accounts / permissions"]
+    tags = ("accounts / permissions",)
     return_dto = PermissionDTO
-    dependencies = {"permission_service": Provide(provide_permission_service)}
-    exception_handlers = {NotFoundError: not_found_error_handler}
+    dependencies: ClassVar = {"permission_service": Provide(provide_permission_service)}
+    exception_handlers: ClassVar = {NotFoundError: not_found_error_handler}
 
     @get(
         "/",
@@ -36,8 +36,7 @@ class PermissionController(Controller):
         guards=[has_permission("permissions", "list")],
     )
     async def list(self, permission_service: PermissionService) -> Sequence[Permission]:
-        """
-        List all permissions in the system.
+        """List all permissions in the system.
 
         This endpoint requires the 'permissions:list' permission.
         """
@@ -50,8 +49,7 @@ class PermissionController(Controller):
         guards=[has_permission("permissions", "create")],
     )
     async def create(self, data: Permission, permission_service: PermissionService) -> Permission:
-        """
-        Create a new permission.
+        """Create a new permission.
 
         Creates a new permission with the provided resource and action data.
         Requires the 'permissions:create' permission.
@@ -64,8 +62,7 @@ class PermissionController(Controller):
         guards=[has_permission("permissions", "read")],
     )
     async def fetch(self, permission_id: UUID, permission_service: PermissionService) -> Permission:
-        """
-        Fetch a specific permission by its UUID.
+        """Fetch a specific permission by its UUID.
 
         Requires the 'permissions:read' permission.
         """
@@ -83,8 +80,7 @@ class PermissionController(Controller):
         data: DTOData[Permission],
         permission_service: PermissionService,
     ) -> Permission:
-        """
-        Update an existing permission's data.
+        """Update an existing permission's data.
 
         Requires the 'permissions:update' permission.
         """
@@ -97,8 +93,7 @@ class PermissionController(Controller):
         guards=[has_permission("permissions", "delete")],
     )
     async def delete(self, permission_id: UUID, permission_service: PermissionService) -> None:
-        """
-        Delete a permission from the system.
+        """Delete a permission from the system.
 
         Requires the 'permissions:delete' permission.
         """

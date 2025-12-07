@@ -1,5 +1,4 @@
-"""
-Tests for authentication functionality.
+"""Tests for authentication functionality.
 
 This module contains integration tests for login and logout operations.
 """
@@ -20,7 +19,9 @@ async def test_login_success(client_with_accounts: AsyncTestClient) -> None:
     }
 
     response = await client_with_accounts.post(
-        "/accounts/auth/login", data=login_data, headers={"Content-Type": "application/x-www-form-urlencoded"}
+        "/accounts/auth/login",
+        data=login_data,
+        headers={"Content-Type": "application/x-www-form-urlencoded"},
     )
 
     assert response.status_code == 200
@@ -29,14 +30,14 @@ async def test_login_success(client_with_accounts: AsyncTestClient) -> None:
     # Should return token information
     assert "access_token" in data
     assert "token_type" in data
-    assert data["token_type"] == "bearer"
+    assert data["token_type"] == "bearer"  # noqa: S105
 
     # Should set authentication cookie
     assert "token" in response.cookies
 
 
 @pytest.mark.parametrize(
-    "username,password,expected_status,error_message",
+    ("username", "password", "expected_status", "error_message"),
     [
         ("nonexistent_user", "anypassword", 401, "Invalid username or password"),
         ("admin_user", "wrong_password", 401, "Invalid username or password"),
@@ -55,7 +56,9 @@ async def test_login_invalid_credentials(
     login_data = {"username": username, "password": password}
 
     response = await client_with_accounts.post(
-        "/accounts/auth/login", data=login_data, headers={"Content-Type": "application/x-www-form-urlencoded"}
+        "/accounts/auth/login",
+        data=login_data,
+        headers={"Content-Type": "application/x-www-form-urlencoded"},
     )
 
     assert response.status_code == expected_status
@@ -64,7 +67,7 @@ async def test_login_invalid_credentials(
 
 
 @pytest.mark.parametrize(
-    "login_data,expected_status",
+    ("login_data", "expected_status"),
     [
         ({"password": "somepassword"}, 500),
         ({"username": "someuser"}, 500),
@@ -73,7 +76,9 @@ async def test_login_invalid_credentials(
 )
 @pytest.mark.asyncio
 async def test_login_missing_credentials(
-    client_with_accounts: AsyncTestClient, login_data: dict, expected_status: int
+    client_with_accounts: AsyncTestClient,
+    login_data: dict,
+    expected_status: int,
 ) -> None:
     """Test login with missing credentials."""
     response = await client_with_accounts.post(
@@ -116,7 +121,9 @@ async def test_login_updates_last_login(authenticated_client: AsyncTestClient) -
     }
 
     login_response = await authenticated_client.post(
-        "/accounts/auth/login", data=login_data, headers={"Content-Type": "application/x-www-form-urlencoded"}
+        "/accounts/auth/login",
+        data=login_data,
+        headers={"Content-Type": "application/x-www-form-urlencoded"},
     )
 
     assert login_response.status_code == 200
@@ -128,7 +135,7 @@ async def test_login_updates_last_login(authenticated_client: AsyncTestClient) -
 
 
 @pytest.mark.parametrize(
-    "request_method,expected_status_range",
+    ("request_method", "expected_status_range"),
     [
         ("json", [400, 415, 422, 500]),
         ("form", [200]),
@@ -137,7 +144,9 @@ async def test_login_updates_last_login(authenticated_client: AsyncTestClient) -
 )
 @pytest.mark.asyncio
 async def test_login_with_different_content_types(
-    client_with_accounts: AsyncTestClient, request_method: str, expected_status_range: list[int]
+    client_with_accounts: AsyncTestClient,
+    request_method: str,
+    expected_status_range: list[int],
 ) -> None:
     """Test that login only works with correct content type."""
     # Create a test user

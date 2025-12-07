@@ -1,17 +1,15 @@
-"""
-Tests for permission-based access control guards.
+"""Tests for permission-based access control guards.
 
 This module tests that guards correctly enforce permission-based access control
 across different endpoints and operations.
 """
 
 from collections.abc import AsyncIterator
-from typing import Any
 
 import pytest
 import pytest_asyncio
 from litestar.testing.client import AsyncTestClient
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, create_async_engine
 
 from app.api.accounts.users.services import password_hasher
 from app.models.accounts import Permission, Role, User
@@ -29,7 +27,10 @@ TEST_PERMISSIONS_DATA = {
 
 
 async def _create_user_with_permissions(
-    engine: Any, username: str, password: str, permission_names: list[str]
+    engine: AsyncEngine,
+    username: str,
+    password: str,
+    permission_names: list[str],
 ) -> tuple[User, str]:
     """Create a user with specific permissions."""
     async with AsyncSession(engine) as session:
@@ -69,13 +70,17 @@ async def _create_user_with_permissions(
 
 @pytest_asyncio.fixture(scope="function")
 async def client_with_list_permission(
-    client: AsyncTestClient, session_database: dict[str, str]
+    client: AsyncTestClient,
+    session_database: dict[str, str],
 ) -> AsyncIterator[AsyncTestClient]:
     """Create authenticated client with only users:list permission."""
     engine = create_async_engine(session_database["url"], echo=False)
     try:
         user, password = await _create_user_with_permissions(
-            engine, "list_user", "password123", ["users:list"]
+            engine,
+            "list_user",
+            "password123",
+            ["users:list"],
         )
 
         # Authenticate
@@ -92,13 +97,17 @@ async def client_with_list_permission(
 
 @pytest_asyncio.fixture(scope="function")
 async def client_with_read_permission(
-    client: AsyncTestClient, session_database: dict[str, str]
+    client: AsyncTestClient,
+    session_database: dict[str, str],
 ) -> AsyncIterator[AsyncTestClient]:
     """Create authenticated client with only users:read permission."""
     engine = create_async_engine(session_database["url"], echo=False)
     try:
         user, password = await _create_user_with_permissions(
-            engine, "read_user", "password123", ["users:read"]
+            engine,
+            "read_user",
+            "password123",
+            ["users:read"],
         )
 
         # Authenticate
@@ -115,13 +124,17 @@ async def client_with_read_permission(
 
 @pytest_asyncio.fixture(scope="function")
 async def client_with_create_permission(
-    client: AsyncTestClient, session_database: dict[str, str]
+    client: AsyncTestClient,
+    session_database: dict[str, str],
 ) -> AsyncIterator[AsyncTestClient]:
     """Create authenticated client with only users:create permission."""
     engine = create_async_engine(session_database["url"], echo=False)
     try:
         user, password = await _create_user_with_permissions(
-            engine, "create_user", "password123", ["users:create"]
+            engine,
+            "create_user",
+            "password123",
+            ["users:create"],
         )
 
         # Authenticate
@@ -138,7 +151,8 @@ async def client_with_create_permission(
 
 @pytest_asyncio.fixture(scope="function")
 async def client_with_full_user_permissions(
-    client: AsyncTestClient, session_database: dict[str, str]
+    client: AsyncTestClient,
+    session_database: dict[str, str],
 ) -> AsyncIterator[AsyncTestClient]:
     """Create authenticated client with all user permissions."""
     engine = create_async_engine(session_database["url"], echo=False)
@@ -164,7 +178,8 @@ async def client_with_full_user_permissions(
 
 @pytest_asyncio.fixture(scope="function")
 async def client_with_no_permissions(
-    client: AsyncTestClient, session_database: dict[str, str]
+    client: AsyncTestClient,
+    session_database: dict[str, str],
 ) -> AsyncIterator[AsyncTestClient]:
     """Create authenticated client with no permissions."""
     engine = create_async_engine(session_database["url"], echo=False)
@@ -313,7 +328,8 @@ async def test_full_crud_with_all_permissions(client_with_full_user_permissions:
 
 @pytest_asyncio.fixture(scope="function")
 async def client_with_inactive_permission(
-    client: AsyncTestClient, session_database: dict[str, str]
+    client: AsyncTestClient,
+    session_database: dict[str, str],
 ) -> AsyncIterator[AsyncTestClient]:
     """Create authenticated client with inactive permission."""
     engine = create_async_engine(session_database["url"], echo=False)
@@ -330,7 +346,10 @@ async def client_with_inactive_permission(
 
             # Create role with inactive permission
             role = Role(
-                name="inactive_perm_role", description="Test role", is_active=True, permissions=[permission]
+                name="inactive_perm_role",
+                description="Test role",
+                is_active=True,
+                permissions=[permission],
             )
             session.add(role)
 
@@ -373,13 +392,17 @@ async def test_inactive_permission_denied(client_with_inactive_permission: Async
 
 @pytest_asyncio.fixture(scope="function")
 async def client_with_role_permissions(
-    client: AsyncTestClient, session_database: dict[str, str]
+    client: AsyncTestClient,
+    session_database: dict[str, str],
 ) -> AsyncIterator[AsyncTestClient]:
     """Create authenticated client with role permissions."""
     engine = create_async_engine(session_database["url"], echo=False)
     try:
         user, password = await _create_user_with_permissions(
-            engine, "role_user", "password123", ["roles:list", "roles:create"]
+            engine,
+            "role_user",
+            "password123",
+            ["roles:list", "roles:create"],
         )
 
         # Authenticate

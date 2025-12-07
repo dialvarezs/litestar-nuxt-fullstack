@@ -1,5 +1,4 @@
-"""
-Main application module for the PM API.
+"""Main application module for the PM API.
 
 This module configures and initializes the Litestar application with all necessary
 middleware, plugins, and routing configurations.
@@ -24,13 +23,13 @@ from app.db import create_sqlalchemy_plugin
 
 def create_app(
     app_settings: Settings | None = None,
-    title: str = "PM API",
+    title: str = "App API",
+    *,
     enable_structlog: bool = True,
     pool_size: int | None = None,
     max_overflow: int | None = None,
 ) -> Litestar:
-    """
-    Create and configure a Litestar application instance.
+    """Create and configure a Litestar application instance.
 
     This function creates a Litestar app with all necessary configurations
     including OpenAPI, CORS, authentication, and plugins. It can be used
@@ -45,12 +44,15 @@ def create_app(
 
     Returns:
         Configured Litestar application instance
+
     """
     if app_settings is None:
         app_settings = settings
 
     app_sqlalchemy_plugin = create_sqlalchemy_plugin(
-        app_settings, pool_size=pool_size, max_overflow=max_overflow
+        app_settings,
+        pool_size=pool_size,
+        max_overflow=max_overflow,
     )
     app_sqlalchemy_config = app_sqlalchemy_plugin.config[0]
 
@@ -71,7 +73,7 @@ def create_app(
             middleware_logging_config=LoggingMiddlewareConfig(
                 response_log_fields=("status_code", "cookies", "headers"),
             ),
-        )
+        ),
     )
 
     cors_config = CORSConfig(

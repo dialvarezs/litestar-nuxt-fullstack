@@ -15,5 +15,4 @@ class PermissionRepository(SQLAlchemyAsyncRepository[Permission]):
 
 async def provide_permission_repository(db_session: AsyncSession) -> PermissionRepository:
     """Dependency injection provider for permission repository."""
-
     return PermissionRepository(session=db_session, statement=select(Permission).order_by(Permission.name))

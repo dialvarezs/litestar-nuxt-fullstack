@@ -1,6 +1,9 @@
-from collections.abc import AsyncIterator
-from typing import Any, cast
+"""Test configuration and fixtures for pytest."""
 
+from collections.abc import AsyncIterator
+from typing import cast
+
+import pytest
 import pytest_asyncio
 from litestar.testing.client import AsyncTestClient
 from pytest_databases.docker.postgres import PostgresService
@@ -15,7 +18,10 @@ pytest_plugins = ["pytest_databases.docker.postgres"]
 
 @pytest_asyncio.fixture(scope="session")
 async def session_database(
-    postgres_service: PostgresService, postgres_user: str, postgres_password: str, request: Any
+    postgres_service: PostgresService,
+    postgres_user: str,
+    postgres_password: str,
+    request: pytest.FixtureRequest,
 ) -> AsyncIterator[dict[str, str]]:
     """Create a session-scoped database per worker."""
     import os
@@ -30,7 +36,10 @@ async def session_database(
 
     # Connect to default postgres db to create our session test database
     default_engine = create_async_engine(
-        f"{base_url}/postgres", echo=False, isolation_level="AUTOCOMMIT", poolclass=NullPool
+        f"{base_url}/postgres",
+        echo=False,
+        isolation_level="AUTOCOMMIT",
+        poolclass=NullPool,
     )
     try:
         async with default_engine.connect() as conn:
@@ -52,7 +61,10 @@ async def session_database(
 
     # Drop the session test database
     cleanup_engine = create_async_engine(
-        f"{base_url}/postgres", echo=False, isolation_level="AUTOCOMMIT", poolclass=NullPool
+        f"{base_url}/postgres",
+        echo=False,
+        isolation_level="AUTOCOMMIT",
+        poolclass=NullPool,
     )
     try:
         async with cleanup_engine.connect() as conn:
@@ -62,7 +74,7 @@ async def session_database(
                 SELECT pg_terminate_backend(pid)
                 FROM pg_stat_activity
                 WHERE datname = '{db_name}' AND pid <> pg_backend_pid()
-            """)
+            """),
             )
             await conn.execute(text(f"DROP DATABASE IF EXISTS {db_name}"))
     finally:
@@ -71,8 +83,7 @@ async def session_database(
 
 @pytest_asyncio.fixture(scope="function")
 async def clean_database(session_database: dict[str, str]) -> AsyncIterator[None]:
-    """
-    Clean database between tests by truncating all tables.
+    """Clean database between tests by truncating all tables.
 
     Uses two engines to avoid connection leaks:
     1. terminator_engine: Kills orphaned connections to test DB (connects to postgres db)
@@ -91,11 +102,11 @@ async def clean_database(session_database: dict[str, str]) -> AsyncIterator[None
     try:
         # Terminate stray connections from previous tests to prevent connection pool exhaustion
         async with terminator_engine.connect() as conn:
-            await conn.execute(
-                text(
-                    f"SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '{session_database['db_name']}' AND pid <> pg_backend_pid()"
-                )
+            query = (
+                f"SELECT pg_terminate_backend(pid) FROM pg_stat_activity "
+                f"WHERE datname = '{session_database['db_name']}' AND pid <> pg_backend_pid()"
             )
+            await conn.execute(text(query))
 
         # Clean tables before the test
         async with clean_engine.begin() as conn:
@@ -118,6 +129,8 @@ async def client(session_database: dict[str, str], clean_database: None) -> Asyn
 
     from app.main import create_app
 
+    _ = clean_database
+
     class TestSettings(Settings):
         """Test-specific settings that don't use TOML config."""
 
@@ -126,16 +139,19 @@ async def client(session_database: dict[str, str], clean_database: None) -> Asyn
         @classmethod
         def settings_customise_sources(
             cls,
-            settings_cls: type[BaseSettings],
+            _settings_cls: type[BaseSettings],
             init_settings: PydanticBaseSettingsSource,
             env_settings: PydanticBaseSettingsSource,
             dotenv_settings: PydanticBaseSettingsSource,
             file_secret_settings: PydanticBaseSettingsSource,
         ) -> tuple[PydanticBaseSettingsSource, ...]:
+            _ = env_settings
+            _ = dotenv_settings
+            _ = file_secret_settings
             return (init_settings,)
 
     test_settings = cast(
-        Settings,
+        "Settings",
         TestSettings(
             database_url=AnyUrl(session_database["url"]),
             secret_key=SecretStr("test_secret_key_for_testing_only"),

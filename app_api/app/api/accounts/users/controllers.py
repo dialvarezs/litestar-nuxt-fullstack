@@ -1,14 +1,17 @@
 """User management controller module."""
 
-from typing import Any, Sequence
-from uuid import UUID
+from __future__ import annotations
+
+from collections.abc import Sequence  # noqa: TC003
+from typing import Any, ClassVar
+from uuid import UUID  # noqa: TC003
 
 from advanced_alchemy.exceptions import NotFoundError
 from litestar import Controller, Request, Response, delete, get, patch, post
 from litestar.di import Provide
-from litestar.dto import DTOData
+from litestar.dto import DTOData  # noqa: TC002
 from litestar.exceptions import HTTPException
-from litestar.security.jwt import Token  # noqa: F401
+from litestar.security.jwt import Token  # noqa: TC002
 
 from app.api.accounts.auth.guards import has_permission
 from app.api.accounts.users.dtos import (
@@ -21,7 +24,7 @@ from app.api.accounts.users.dtos import (
     UserWriteDTO,
 )
 from app.api.accounts.users.services import UserService, provide_user_service
-from app.models.accounts import User
+from app.models.accounts import User  # noqa: TC001
 
 
 def not_found_error_handler(_: Request[Any, Any, Any], __: NotFoundError) -> Response[Any]:
@@ -30,18 +33,17 @@ def not_found_error_handler(_: Request[Any, Any, Any], __: NotFoundError) -> Res
 
 
 class UserController(Controller):
-    """
-    User management controller for comprehensive user operations.
+    """User management controller for comprehensive user operations.
 
     Provides endpoints for user CRUD operations, authentication management,
     password changes, and username availability checking.
     """
 
     path = "/users"
-    tags = ["accounts / users"]
+    tags = ("accounts / users",)
     return_dto = UserDTO
-    dependencies = {"user_service": Provide(provide_user_service)}
-    exception_handlers = {NotFoundError: not_found_error_handler}
+    dependencies: ClassVar = {"user_service": Provide(provide_user_service)}
+    exception_handlers: ClassVar = {NotFoundError: not_found_error_handler}
 
     @get(
         "/",
@@ -49,8 +51,7 @@ class UserController(Controller):
         guards=[has_permission("users", "list")],
     )
     async def list(self, user_service: UserService) -> Sequence[User]:
-        """
-        List all users in the system.
+        """List all users in the system.
 
         This endpoint requires the 'users:list' permission.
         """
@@ -63,8 +64,7 @@ class UserController(Controller):
         guards=[has_permission("users", "create")],
     )
     async def create(self, data: User, user_service: UserService) -> User:
-        """
-        Create a new user with associated roles.
+        """Create a new user with associated roles.
 
         Creates a new user account with the provided user data and assigns
         any specified roles. Requires the 'users:create' permission.
@@ -75,9 +75,8 @@ class UserController(Controller):
             raise HTTPException(detail=str(e), status_code=409) from e
 
     @get("/me", summary="FetchMyUser")
-    async def fetch_me(self, request: "Request[User, Token, Any]") -> User:
-        """
-        Fetch the currently authenticated user's profile.
+    async def fetch_me(self, request: Request[User, Token, Any]) -> User:
+        """Fetch the currently authenticated user's profile.
 
         Returns the complete user profile for the currently authenticated user
         based on the JWT token provided in the request.
@@ -90,8 +89,7 @@ class UserController(Controller):
         guards=[has_permission("users", "read")],
     )
     async def fetch(self, user_id: UUID, user_service: UserService) -> User:
-        """
-        Fetch a specific user by their UUID.
+        """Fetch a specific user by their UUID.
 
         Retrieves the complete user profile for a specific user identified
         by their unique UUID. Requires the 'users:read' permission.
@@ -106,6 +104,7 @@ class UserController(Controller):
         Raises:
             NotFoundError: If no user exists with the provided UUID (handled by not_found_error_handler)
             PermissionDeniedException: If the user lacks 'users:read' permission
+
         """
         return await user_service.get(user_id)
 
@@ -116,8 +115,7 @@ class UserController(Controller):
         guards=[has_permission("users", "update")],
     )
     async def update(self, user_id: UUID, data: DTOData[User], user_service: UserService) -> User:
-        """
-        Update an existing user's profile and roles.
+        """Update an existing user's profile and roles.
 
         Updates the specified user's profile information and role assignments
         with the provided data. Requires the 'users:update' permission.
@@ -131,11 +129,10 @@ class UserController(Controller):
     async def update_my_password(
         self,
         data: DTOData[PasswordChange],
-        request: "Request[User, Token, Any]",
+        request: Request[User, Token, Any],
         user_service: UserService,
     ) -> None:
-        """
-        Update the authenticated user's password.
+        """Update the authenticated user's password.
 
         Allows the currently authenticated user to change their password by providing
         their current password and a new password. The current password is validated
@@ -150,9 +147,7 @@ class UserController(Controller):
 
     @get("/username-available", summary="CheckUsernameAvailable", return_dto=UsernameAvailableDTO)
     async def username_available(self, username: str, user_service: UserService) -> UsernameAvailable:
-        """
-        Check if a username is available for registration.
-        """
+        """Check if a username is available for registration."""
         return await user_service.check_username_availability(username)
 
     @delete(
@@ -161,8 +156,7 @@ class UserController(Controller):
         guards=[has_permission("users", "delete")],
     )
     async def delete(self, user_id: UUID, user_service: UserService) -> None:
-        """
-        Delete a user account from the system.
+        """Delete a user account from the system.
 
         Requires the 'users:delete' permission.
         """

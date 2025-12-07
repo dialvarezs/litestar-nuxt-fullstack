@@ -1,5 +1,4 @@
-"""
-User service module.
+"""User service module.
 
 This module provides business logic abstraction, data transformation,
 and validation for user management operations.
@@ -24,17 +23,22 @@ password_hasher = PasswordHash.recommended()
 
 
 class UserService(SQLAlchemyAsyncRepositoryService[User, UserRepository]):
-    """
-    User service for business logic abstraction.
+    """User service for business logic abstraction.
 
     Provides high-level operations for user management including
     validation, transformation, and complex business rules.
     """
 
     repository_type = UserRepository
-    match_fields = ["id"]
+    match_fields = ("id",)
 
-    def __init__(self, **repo_kwargs: Any) -> None:
+    def __init__(self, **repo_kwargs: object) -> None:
+        """Initialize user service with repository configuration.
+
+        Args:
+            **repo_kwargs: Arguments to pass to the repository.
+
+        """
         super().__init__(**repo_kwargs)
         self.role_service: RoleService | None = None
 
@@ -43,12 +47,12 @@ class UserService(SQLAlchemyAsyncRepositoryService[User, UserRepository]):
 
         Args:
             role_service: Service used to resolve role identifiers.
+
         """
         self.role_service = role_service
 
     async def create_user_with_roles(self, data: User) -> User:
-        """
-        Create a new user with role validation and password hashing.
+        """Create a new user with role validation and password hashing.
 
         Args:
             data: User data including roles and password
@@ -59,6 +63,7 @@ class UserService(SQLAlchemyAsyncRepositoryService[User, UserRepository]):
         Raises:
             ValueError: If roles don't exist or validation fails
             DuplicateKeyError: If username/email already exists
+
         """
         user = User(**data.to_dict())
 
@@ -70,13 +75,14 @@ class UserService(SQLAlchemyAsyncRepositoryService[User, UserRepository]):
             if hasattr(data, "roles"):
                 user.roles = await self._validate_and_get_roles([role.to_dict() for role in data.roles])
 
-            return user
         except DuplicateKeyError as e:
-            raise ValueError("Username or email already in use") from e
+            msg = "Username or email already in use"
+            raise ValueError(msg) from e
+        else:
+            return user
 
     async def update_user_with_roles(self, user_id: UUID, data: DTOData[User]) -> User:
-        """
-        Update user with role validation and optional password hashing.
+        """Update user with role validation and optional password hashing.
 
         Args:
             user_id: User to update
@@ -84,6 +90,7 @@ class UserService(SQLAlchemyAsyncRepositoryService[User, UserRepository]):
 
         Returns:
             Updated user
+
         """
         data_dict = data.as_builtins()
         roles_data = data_dict.pop("roles", None)
@@ -99,8 +106,7 @@ class UserService(SQLAlchemyAsyncRepositoryService[User, UserRepository]):
         return updated_user
 
     async def update_password(self, user_id: UUID, password_data: DTOData[PasswordChange]) -> None:
-        """
-        Change user password with current password verification.
+        """Change user password with current password verification.
 
         Args:
             user_id: User whose password to change
@@ -108,6 +114,7 @@ class UserService(SQLAlchemyAsyncRepositoryService[User, UserRepository]):
 
         Raises:
             ValueError: If current password is incorrect
+
         """
         data = password_data.as_builtins()
         current_password = data["current_password"]
@@ -116,27 +123,27 @@ class UserService(SQLAlchemyAsyncRepositoryService[User, UserRepository]):
         # Get user and verify current password
         user = await self.get(user_id)
         if not password_hasher.verify(current_password, user.password):
-            raise ValueError("Invalid current password")
+            msg = "Invalid current password"
+            raise ValueError(msg)
 
         password_update = {"password": password_hasher.hash(new_password)}
         await self.update(item_id=user_id, data=password_update)
 
     async def check_username_availability(self, username: str) -> UsernameAvailable:
-        """
-        Check username availability for registration.
+        """Check username availability for registration.
 
         Args:
             username: Username to check
 
         Returns:
             Username availability result
+
         """
         exists = await self.repository.username_exists(username)
         return UsernameAvailable(username=username, available=not exists)
 
     async def _validate_and_get_roles(self, roles: list[dict[str, Any]]) -> list[Role]:
-        """
-        Validate role existence and return role objects.
+        """Validate role existence and return role objects.
 
         Args:
             roles: List of role objects or IDs to validate
@@ -146,9 +153,11 @@ class UserService(SQLAlchemyAsyncRepositoryService[User, UserRepository]):
 
         Raises:
             ValueError: If role service not configured
+
         """
         if not self.role_service:
-            raise ValueError("Role service not configured")
+            msg = "Role service not configured"
+            raise ValueError(msg)
 
         if not roles:
             return []
@@ -157,7 +166,7 @@ class UserService(SQLAlchemyAsyncRepositoryService[User, UserRepository]):
 
         validated_roles = await self.role_service.list(CollectionFilter(field_name="id", values=role_ids))
 
-        return [role for role in validated_roles]
+        return list(validated_roles)
 
 
 async def provide_user_service(db_session: AsyncSession) -> UserService:
@@ -168,9 +177,8 @@ async def provide_user_service(db_session: AsyncSession) -> UserService:
 
     Returns:
         :class:`UserService` wired with a :class:`RoleService`.
-    """
-    from app.api.accounts.roles.services import RoleService
 
+    """
     user_service = UserService(session=db_session)
     role_service = RoleService(session=db_session)
     user_service.set_role_service(role_service)

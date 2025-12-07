@@ -1,3 +1,5 @@
+"""Accounts module router configuration."""
+
 from litestar import Router
 
 from .auth.controllers import AuthController

@@ -1,5 +1,4 @@
-"""
-Authentication data transfer objects (DTOs).
+"""Authentication data transfer objects (DTOs).
 
 This module defines the data structures used for authentication requests
 and their corresponding Litestar DTOs for validation and serialization.
@@ -20,5 +19,3 @@ class Login:
 
 class LoginDTO(DataclassDTO[Login]):
     """DTO for login."""
-
-    pass

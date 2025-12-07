@@ -1,6 +1,7 @@
 """Role management controller module."""
 
-from typing import Any, Sequence
+from collections.abc import Sequence
+from typing import Any, ClassVar
 from uuid import UUID
 
 from advanced_alchemy.exceptions import NotFoundError
@@ -22,18 +23,17 @@ def not_found_error_handler(_: Request[Any, Any, Any], __: NotFoundError) -> Res
 
 
 class RoleController(Controller):
-    """
-    Role management controller for CRUD operations.
+    """Role management controller for CRUD operations.
 
     Provides endpoints for creating, reading, updating, and managing
     user roles in the system's role-based access control.
     """
 
     path = "/roles"
-    tags = ["accounts / roles"]
+    tags = ("accounts / roles",)
     return_dto = RoleDTO
-    dependencies = {"role_service": Provide(provide_role_service)}
-    exception_handlers = {NotFoundError: not_found_error_handler}
+    dependencies: ClassVar = {"role_service": Provide(provide_role_service)}
+    exception_handlers: ClassVar = {NotFoundError: not_found_error_handler}
 
     @get(
         "/",
@@ -41,8 +41,7 @@ class RoleController(Controller):
         guards=[has_permission("roles", "list")],
     )
     async def list(self, role_service: RoleService) -> Sequence[Role]:
-        """
-        List all roles in the system.
+        """List all roles in the system.
 
         This endpoint requires the 'roles:list' permission.
         """
@@ -55,8 +54,7 @@ class RoleController(Controller):
         guards=[has_permission("roles", "create")],
     )
     async def create(self, data: Role, role_service: RoleService) -> Role:
-        """
-        Create a new role with associated permissions.
+        """Create a new role with associated permissions.
 
         Creates a new role with the provided data and assigns any specified
         permissions. Requires the 'roles:create' permission.
@@ -72,8 +70,7 @@ class RoleController(Controller):
         guards=[has_permission("roles", "read")],
     )
     async def fetch(self, role_id: UUID, role_service: RoleService) -> Role:
-        """
-        Fetch a specific role by its UUID.
+        """Fetch a specific role by its UUID.
 
         Requires the 'roles:read' permission.
         """
@@ -86,8 +83,7 @@ class RoleController(Controller):
         guards=[has_permission("roles", "update")],
     )
     async def update(self, role_id: UUID, data: DTOData[Role], role_service: RoleService) -> Role:
-        """
-        Update an existing role's data and permissions.
+        """Update an existing role's data and permissions.
 
         Updates the specified role's information and permission assignments
         with the provided data. Requires the 'roles:update' permission.

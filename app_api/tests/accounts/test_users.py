@@ -1,5 +1,4 @@
-"""
-Tests for user management functionality.
+"""Tests for user management functionality.
 
 This module contains integration tests for user operations.
 """
@@ -132,7 +131,7 @@ async def test_update_user_roles(authenticated_client: AsyncTestClient) -> None:
 
 
 @pytest.mark.parametrize(
-    "username,expected_available",
+    ("username", "expected_available"),
     [
         (TEST_USERS["regular"]["username"], False),
         ("user_new_123", True),
@@ -143,7 +142,7 @@ async def test_update_user_roles(authenticated_client: AsyncTestClient) -> None:
 async def test_username_available(
     authenticated_client: AsyncTestClient,
     username: str,
-    expected_available: bool,
+    expected_available: bool,  # noqa: FBT001
 ) -> None:
     """Test username availability check."""
     response = await authenticated_client.get(f"/accounts/users/username-available?username={username}")
@@ -166,6 +165,7 @@ async def test_delete_user(authenticated_client: AsyncTestClient) -> None:
 
 @pytest.mark.asyncio
 async def test_fetch_my_user(authenticated_client: AsyncTestClient) -> None:
+    """Test fetching authenticated user's own profile."""
     response = await authenticated_client.get("/accounts/users/me")
 
     assert response.status_code == 200

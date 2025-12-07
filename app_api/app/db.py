@@ -1,5 +1,4 @@
-"""
-Database configuration module.
+"""Database configuration module.
 
 This module sets up the SQLAlchemy database configuration and plugin
 for the Litestar application using async SQLAlchemy support.
@@ -17,10 +16,11 @@ from app.config import Settings, settings
 
 
 def create_sqlalchemy_config(
-    app_settings: Settings | None = None, pool_size: int | None = None, max_overflow: int | None = None
+    app_settings: Settings | None = None,
+    pool_size: int | None = None,
+    max_overflow: int | None = None,
 ) -> SQLAlchemyAsyncConfig:
-    """
-    Create SQLAlchemy configuration with the given settings.
+    """Create SQLAlchemy configuration with the given settings.
 
     Args:
         app_settings: Settings instance to use. If None, uses global settings.
@@ -29,6 +29,7 @@ def create_sqlalchemy_config(
 
     Returns:
         SQLAlchemy async configuration instance
+
     """
     if app_settings is None:
         app_settings = settings
@@ -51,10 +52,11 @@ def create_sqlalchemy_config(
 
 
 def create_sqlalchemy_plugin(
-    app_settings: Settings | None = None, pool_size: int | None = None, max_overflow: int | None = None
+    app_settings: Settings | None = None,
+    pool_size: int | None = None,
+    max_overflow: int | None = None,
 ) -> SQLAlchemyPlugin:
-    """
-    Create SQLAlchemy plugin with the given settings.
+    """Create SQLAlchemy plugin with the given settings.
 
     Args:
         app_settings: Settings instance to use. If None, uses global settings.
@@ -63,6 +65,7 @@ def create_sqlalchemy_plugin(
 
     Returns:
         SQLAlchemy plugin instance (config accessible via plugin.config[0])
+
     """
     config = create_sqlalchemy_config(app_settings, pool_size=pool_size, max_overflow=max_overflow)
     return SQLAlchemyPlugin(config=config)

@@ -1,25 +1,26 @@
-"""
-Permission-based access control guards.
+"""Permission-based access control guards.
 
 This module provides guard functions for Litestar route handlers to enforce
 permission-based access control using the existing Permission model.
 """
 
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import TYPE_CHECKING, Any
 
 from litestar.connection import ASGIConnection
 from litestar.exceptions import PermissionDeniedException
 from litestar.handlers.base import BaseRouteHandler
 
-from app.config import Settings
 from app.models.accounts import User
 
 from .permissions import get_user_permissions
 
+if TYPE_CHECKING:
+    from app.config import Settings
+
 
 def _get_authenticated_user(connection: ASGIConnection[Any, Any, Any, Any]) -> User:
-    """
-    Get the authenticated user from the connection.
+    """Get the authenticated user from the connection.
 
     Args:
         connection: The ASGI connection
@@ -29,16 +30,17 @@ def _get_authenticated_user(connection: ASGIConnection[Any, Any, Any, Any]) -> U
 
     Raises:
         PermissionDeniedException: If no user is authenticated
+
     """
     user: User = connection.user
     if not user:
-        raise PermissionDeniedException("Authentication required")
+        msg = "Authentication required"
+        raise PermissionDeniedException(msg)
     return user
 
 
 def _is_superuser(connection: ASGIConnection[Any, Any, Any, Any], user: User) -> bool:
-    """
-    Check if the user has the superuser role.
+    """Check if the user has the superuser role.
 
     Args:
         connection: The ASGI connection (to access settings)
@@ -46,6 +48,7 @@ def _is_superuser(connection: ASGIConnection[Any, Any, Any, Any], user: User) ->
 
     Returns:
         True if the user has the superuser role, False otherwise
+
     """
     settings: Settings = connection.app.state.app_settings
     user_role_names = {role.name for role in user.roles if role.is_active}
@@ -53,10 +56,10 @@ def _is_superuser(connection: ASGIConnection[Any, Any, Any, Any], user: User) ->
 
 
 def has_permission(
-    resource: str, action: str
+    resource: str,
+    action: str,
 ) -> Callable[[ASGIConnection[Any, Any, Any, Any], BaseRouteHandler], None]:
-    """
-    Create a guard function that checks if user has specific permission.
+    """Create a guard function that checks if user has specific permission.
 
     Args:
         resource: The resource name (e.g., "users", "roles", "permissions")
@@ -69,6 +72,7 @@ def has_permission(
         @get("/users", guards=[has_permission("users", "list")])
         async def list_users() -> list[User]:
             ...
+
     """
 
     def guard(connection: ASGIConnection[Any, Any, Any, Any], _: BaseRouteHandler) -> None:
@@ -80,7 +84,8 @@ def has_permission(
 
         user_permissions = get_user_permissions(user)
         if (resource, action) not in user_permissions:
-            raise PermissionDeniedException(f"Permission denied: requires '{resource}:{action}'")
+            msg = f"Permission denied: requires '{resource}:{action}'"
+            raise PermissionDeniedException(msg)
 
     return guard
 
@@ -88,8 +93,7 @@ def has_permission(
 def has_any_permission(
     *permissions: tuple[str, str],
 ) -> Callable[[ASGIConnection[Any, Any, Any, Any], BaseRouteHandler], None]:
-    """
-    Create a guard that checks if user has ANY of the specified permissions.
+    """Create a guard that checks if user has ANY of the specified permissions.
 
     Args:
         *permissions: Variable number of (resource, action) tuples
@@ -101,6 +105,7 @@ def has_any_permission(
         @get("/users", guards=[has_any_permission(("users", "read"), ("users", "list"))])
         async def get_users() -> list[User]:
             ...
+
     """
 
     def guard(connection: ASGIConnection[Any, Any, Any, Any], _: BaseRouteHandler) -> None:
@@ -116,7 +121,8 @@ def has_any_permission(
                 return
 
         permissions_str = ", ".join(f"'{r}:{a}'" for r, a in permissions)
-        raise PermissionDeniedException(f"Permission denied: requires one of [{permissions_str}]")
+        msg = f"Permission denied: requires one of [{permissions_str}]"
+        raise PermissionDeniedException(msg)
 
     return guard
 
@@ -124,8 +130,7 @@ def has_any_permission(
 def has_all_permissions(
     *permissions: tuple[str, str],
 ) -> Callable[[ASGIConnection[Any, Any, Any, Any], BaseRouteHandler], None]:
-    """
-    Create a guard that checks if user has ALL specified permissions.
+    """Create a guard that checks if user has ALL specified permissions.
 
     Args:
         *permissions: Variable number of (resource, action) tuples
@@ -137,6 +142,7 @@ def has_all_permissions(
         @post("/admin/critical", guards=[has_all_permissions(("admin", "access"), ("critical", "write"))])
         async def critical_operation() -> dict:
             ...
+
     """
 
     def guard(connection: ASGIConnection[Any, Any, Any, Any], _: BaseRouteHandler) -> None:
@@ -154,7 +160,8 @@ def has_all_permissions(
 
         if missing_permissions:
             missing_str = ", ".join(f"'{p}'" for p in missing_permissions)
-            raise PermissionDeniedException(f"Permission denied: missing [{missing_str}]")
+            msg = f"Permission denied: missing [{missing_str}]"
+            raise PermissionDeniedException(msg)
 
     return guard
 
@@ -162,8 +169,7 @@ def has_all_permissions(
 def has_role(
     *role_names: str,
 ) -> Callable[[ASGIConnection[Any, Any, Any, Any], BaseRouteHandler], None]:
-    """
-    Create a guard that checks if user has any of the specified roles.
+    """Create a guard that checks if user has any of the specified roles.
 
     Args:
         *role_names: Variable number of role names
@@ -175,6 +181,7 @@ def has_role(
         @get("/admin", guards=[has_role("admin", "superuser")])
         async def admin_panel() -> dict:
             ...
+
     """
 
     def guard(connection: ASGIConnection[Any, Any, Any, Any], _: BaseRouteHandler) -> None:
@@ -192,6 +199,7 @@ def has_role(
                 return
 
         roles_str = ", ".join(f"'{r}'" for r in role_names)
-        raise PermissionDeniedException(f"Permission denied: requires one of roles [{roles_str}]")
+        msg = f"Permission denied: requires one of roles [{roles_str}]"
+        raise PermissionDeniedException(msg)
 
     return guard

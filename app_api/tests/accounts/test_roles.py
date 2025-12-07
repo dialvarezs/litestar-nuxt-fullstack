@@ -1,5 +1,4 @@
-"""
-Tests for role management functionality.
+"""Tests for role management functionality.
 
 This module contains integration tests for role creation and management.
 """
@@ -71,21 +70,20 @@ async def test_update_role(authenticated_client: AsyncTestClient) -> None:
 
     assert response.status_code == 200
     updated_role = response.json()
-    for key in update_data:
-        assert updated_role[key] == update_data[key]
+    for key, value in update_data.items():
+        assert updated_role[key] == value
 
     # Get the updated role to verify changes
     get_response = await authenticated_client.get(f"/accounts/roles/{test_role['id']}")
     assert get_response.status_code == 200
     get_role_data = get_response.json()
-    for key in update_data:
-        assert get_role_data[key] == update_data[key]
+    for key, value in update_data.items():
+        assert get_role_data[key] == value
 
 
 @pytest.mark.asyncio
 async def test_create_role_with_permissions(client_with_permissions: AsyncTestClient) -> None:
     """Roles can be created with associated permissions."""
-
     permission = TEST_PERMISSIONS["view_users"]
 
     role_payload = {
@@ -108,7 +106,6 @@ async def test_create_role_with_permissions(client_with_permissions: AsyncTestCl
 @pytest.mark.asyncio
 async def test_update_role_permissions(client_with_permissions: AsyncTestClient) -> None:
     """Roles can update their permission assignments."""
-
     initial_permission = TEST_PERMISSIONS["view_users"]
     new_permission = TEST_PERMISSIONS["manage_roles"]
 

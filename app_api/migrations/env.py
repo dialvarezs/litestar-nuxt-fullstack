@@ -1,3 +1,5 @@
+"""Alembic migration environment configuration."""
+
 import asyncio
 from typing import TYPE_CHECKING, cast
 
@@ -16,7 +18,7 @@ __all__ = ("do_run_migrations", "run_migrations_offline", "run_migrations_online
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
-config: "AlembicCommandConfig" = context.config  # type: ignore
+config: "AlembicCommandConfig" = context.config  # type: ignore[assignment]
 writer = rewriter.Rewriter()
 
 
@@ -73,6 +75,7 @@ async def run_migrations_online() -> None:
 
     Raises:
         RuntimeError: If the engine cannot be created from the config.
+
     """
     configuration = config.get_section(config.config_ini_section) or {}
     configuration["sqlalchemy.url"] = config.db_url
@@ -90,7 +93,7 @@ async def run_migrations_online() -> None:
     if connectable is None:  # pyright: ignore[reportUnnecessaryComparison]
         msg = (
             "Could not get engine from config.  Please ensure your `alembic.ini` "
-            + "according to the official Alembic documentation."
+            "according to the official Alembic documentation."
         )
         raise RuntimeError(
             msg,

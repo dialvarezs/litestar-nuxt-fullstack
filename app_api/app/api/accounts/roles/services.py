@@ -1,33 +1,39 @@
-from typing import TYPE_CHECKING, Any
+"""Role service module for business logic and data access."""
+
+from typing import Any
 from uuid import UUID
 
 from advanced_alchemy.service import SQLAlchemyAsyncRepositoryService
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.api.accounts.permissions.services import PermissionService
 from app.api.accounts.roles.repositories import RoleRepository
 from app.models.accounts import Permission, Role
-
-if TYPE_CHECKING:
-    from app.api.accounts.permissions.services import PermissionService
 
 
 class RoleService(SQLAlchemyAsyncRepositoryService[Role, RoleRepository]):
     """Role service."""
 
     repository_type = RoleRepository
-    match_fields = ["id"]
+    match_fields = ("id",)
 
-    def __init__(self, **repo_kwargs: Any) -> None:
+    def __init__(self, **repo_kwargs: object) -> None:
+        """Initialize role service with repository configuration.
+
+        Args:
+            **repo_kwargs: Arguments to pass to the repository.
+
+        """
         super().__init__(**repo_kwargs)
-        self.permission_service: "PermissionService | None" = None
+        self.permission_service: PermissionService | None = None
 
     def set_permission_service(self, permission_service: "PermissionService") -> None:
         """Inject the permission service dependency.
 
         Args:
             permission_service: Service used to resolve permission identifiers.
-        """
 
+        """
         self.permission_service = permission_service
 
     async def assign_permissions(self, role: Role, permissions: list[dict[str, Any]]) -> Role:
@@ -39,8 +45,8 @@ class RoleService(SQLAlchemyAsyncRepositoryService[Role, RoleRepository]):
 
         Returns:
             ``role`` with ``permissions`` refreshed to match the IDs provided.
-        """
 
+        """
         role.permissions = await self._validate_and_get_permissions(permissions)
         return role
 
@@ -58,6 +64,7 @@ class RoleService(SQLAlchemyAsyncRepositoryService[Role, RoleRepository]):
 
         Raises:
             ValueError: If permission validation fails.
+
         """
         raw_permissions = getattr(data, "permissions", None) or []
         permissions_payload = self._normalize_permissions(raw_permissions)
@@ -89,6 +96,7 @@ class RoleService(SQLAlchemyAsyncRepositoryService[Role, RoleRepository]):
 
         Raises:
             ValueError: If permission validation fails.
+
         """
         permissions_payload = data.pop("permissions", None)
 
@@ -114,6 +122,7 @@ class RoleService(SQLAlchemyAsyncRepositoryService[Role, RoleRepository]):
 
         Returns:
             List of normalized permission dicts with ``id`` keys.
+
         """
         normalized_permissions: list[dict[str, Any]] = []
 
@@ -139,10 +148,11 @@ class RoleService(SQLAlchemyAsyncRepositoryService[Role, RoleRepository]):
 
         Raises:
             ValueError: If the dependency is missing or an ID is unknown.
-        """
 
+        """
         if not self.permission_service:
-            raise ValueError("Permission service not configured")
+            msg = "Permission service not configured"
+            raise ValueError(msg)
 
         permission_ids: list[UUID | str] = [
             permission["id"] for permission in permissions if "id" in permission
@@ -159,7 +169,8 @@ class RoleService(SQLAlchemyAsyncRepositoryService[Role, RoleRepository]):
         ]
         if missing_ids:
             missing = ", ".join(missing_ids)
-            raise ValueError(f"Unknown permission identifiers: {missing}")
+            msg = f"Unknown permission identifiers: {missing}"
+            raise ValueError(msg)
 
         return list(validated_permissions)
 
@@ -172,9 +183,8 @@ async def provide_role_service(db_session: AsyncSession) -> RoleService:
 
     Returns:
         :class:`RoleService` wired with a :class:`PermissionService`.
-    """
-    from app.api.accounts.permissions.services import PermissionService
 
+    """
     role_service = RoleService(session=db_session)
     permission_service = PermissionService(session=db_session)
     role_service.set_permission_service(permission_service)

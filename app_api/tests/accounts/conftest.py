@@ -1,15 +1,13 @@
-"""
-Fixtures and test data for accounts module.
+"""Fixtures and test data for accounts module.
 
 This module contains reusable test data and fixtures specific to accounts functionality.
 """
 
 from collections.abc import AsyncIterator
-from typing import Any
 
 import pytest_asyncio
 from litestar.testing.client import AsyncTestClient
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, create_async_engine
 from sqlalchemy.pool import NullPool
 
 from app.api.accounts.users.services import password_hasher
@@ -78,7 +76,7 @@ TEST_PERMISSIONS = {
 }
 
 
-async def _populate_roles(engine: Any) -> None:
+async def _populate_roles(engine: AsyncEngine) -> None:
     """Add test roles to database."""
     from uuid import UUID
 
@@ -91,7 +89,7 @@ async def _populate_roles(engine: Any) -> None:
         await session.commit()
 
 
-async def _populate_accounts(engine: Any) -> None:
+async def _populate_accounts(engine: AsyncEngine) -> None:
     """Add test users and roles to database."""
     from uuid import UUID
 
@@ -100,7 +98,9 @@ async def _populate_accounts(engine: Any) -> None:
         role_objects: dict[str, Role] = {}
         for role_data in TEST_ROLES.values():
             role = Role(
-                id=UUID(str(role_data["id"])), name=role_data["name"], description=role_data["description"]
+                id=UUID(str(role_data["id"])),
+                name=role_data["name"],
+                description=role_data["description"],
             )
             session.add(role)
             role_name = str(role_data["name"])
@@ -126,7 +126,7 @@ async def _populate_accounts(engine: Any) -> None:
         await session.commit()
 
 
-async def _populate_permissions(engine: Any) -> None:
+async def _populate_permissions(engine: AsyncEngine) -> None:
     """Add test permissions to database."""
     from uuid import UUID
 
@@ -147,7 +147,8 @@ async def _populate_permissions(engine: Any) -> None:
 
 @pytest_asyncio.fixture(scope="function")
 async def client_with_roles(
-    client: AsyncTestClient, session_database: dict[str, str]
+    client: AsyncTestClient,
+    session_database: dict[str, str],
 ) -> AsyncIterator[AsyncTestClient]:
     """Create a test client with pre-populated roles."""
     engine = create_async_engine(session_database["url"], echo=False, poolclass=NullPool)
@@ -160,7 +161,8 @@ async def client_with_roles(
 
 @pytest_asyncio.fixture(scope="function")
 async def client_with_accounts(
-    client: AsyncTestClient, session_database: dict[str, str]
+    client: AsyncTestClient,
+    session_database: dict[str, str],
 ) -> AsyncIterator[AsyncTestClient]:
     """Create a test client with pre-populated users and roles."""
     engine = create_async_engine(session_database["url"], echo=False, poolclass=NullPool)
@@ -173,7 +175,8 @@ async def client_with_accounts(
 
 @pytest_asyncio.fixture(scope="function")
 async def authenticated_client(
-    client: AsyncTestClient, session_database: dict[str, str]
+    client: AsyncTestClient,
+    session_database: dict[str, str],
 ) -> AsyncIterator[AsyncTestClient]:
     """Create a test client with pre-populated users and roles, and authenticate a user."""
     engine = create_async_engine(session_database["url"], echo=False, poolclass=NullPool)
@@ -201,10 +204,10 @@ async def authenticated_client(
 
 @pytest_asyncio.fixture(scope="function")
 async def client_with_permissions(
-    authenticated_client: AsyncTestClient, session_database: dict[str, str]
+    authenticated_client: AsyncTestClient,
+    session_database: dict[str, str],
 ) -> AsyncIterator[AsyncTestClient]:
     """Create a test client with pre-populated users, roles, and permissions."""
-
     engine = create_async_engine(session_database["url"], echo=False, poolclass=NullPool)
     try:
         await _populate_permissions(engine)

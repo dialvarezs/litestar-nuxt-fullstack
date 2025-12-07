@@ -21,5 +21,6 @@ class PermissionUpdateDTO(PermissionDTO):
     """DTO for updating permissions."""
 
     config = SQLAlchemyDTOConfig(
-        include={"name", "resource", "action", "description", "is_active"}, partial=True
+        include={"name", "resource", "action", "description", "is_active"},
+        partial=True,
     )

@@ -1,5 +1,4 @@
-"""
-Role data transfer objects (DTOs).
+"""Role data transfer objects (DTOs).
 
 This module defines the DTOs for role-related operations, providing
 different configurations for various CRUD operations on role data.

@@ -1,5 +1,4 @@
-"""
-User data transfer objects (DTOs).
+"""User data transfer objects (DTOs).
 
 This module defines the DTOs for user-related operations, providing
 different configurations for various CRUD operations and specialized
@@ -30,7 +29,8 @@ class UserUpdateDTO(SQLAlchemyDTO[User]):
     """DTO for updating users."""
 
     config = SQLAlchemyDTOConfig(
-        include={"username", "email", "fullname", "password", "is_active", "roles.0.id"}, partial=True
+        include={"username", "email", "fullname", "password", "is_active", "roles.0.id"},
+        partial=True,
     )
 
 
@@ -45,8 +45,6 @@ class PasswordChange:
 class PasswordChangeDTO(DataclassDTO[PasswordChange]):
     """DTO for password changes."""
 
-    pass
-
 
 @dataclass
 class UsernameAvailable:
@@ -58,5 +56,3 @@ class UsernameAvailable:
 
 class UsernameAvailableDTO(DataclassDTO[UsernameAvailable]):
     """DTO for username availability."""
-
-    pass

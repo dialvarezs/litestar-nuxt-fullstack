@@ -14,15 +14,14 @@ from .services import AuthService, provide_auth_service
 
 
 class AuthController(Controller):
-    """
-    Authentication controller handling login and logout operations.
+    """Authentication controller handling login and logout operations.
 
     Provides endpoints for user authentication using username/password
     credentials and JWT token management.
     """
 
     path = "/auth"
-    tags = ["accounts / auth"]
+    tags = ("accounts / auth",)
 
     @post(
         "/login",
@@ -35,8 +34,7 @@ class AuthController(Controller):
         data: Annotated[Login, Body(media_type=RequestEncodingType.URL_ENCODED)],
         auth_service: AuthService,
     ) -> Response[Any]:
-        """
-        Authenticate user with username and password.
+        """Authenticate user with username and password.
 
         Validates user credentials, updates last login timestamp, and returns
         a JWT token for authenticated access.
@@ -54,9 +52,7 @@ class AuthController(Controller):
 
     @post("/logout")
     async def logout(self) -> Response[None]:
-        """
-        Log out the current user by clearing the authentication token.
-        """
+        """Log out the current user by clearing the authentication token."""
         response = Response(content=None, status_code=HTTP_200_OK)
         response.delete_cookie("token")
 
