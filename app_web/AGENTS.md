@@ -10,23 +10,23 @@ This is a Nuxt 4 + TypeScript frontend application that connects to a backend AP
 
 ```bash
 # Install dependencies
-bun install
+pnpm install
 
 # Start development server (accessible on all network interfaces)
-bun run dev
+pnpm dev
 
 # Type checking
-bun run typecheck
+pnpm typecheck
 
 # Linting
-bun run lint        # Check for issues
-bun run lint:fix    # Auto-fix issues
+pnpm lint           # Check for issues
+pnpm lint:fix       # Auto-fix issues
 
 # Build for production
-bun run build
+pnpm build
 
 # Preview production build
-bun run preview
+pnpm preview
 ```
 
 ## Architecture

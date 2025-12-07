@@ -3,27 +3,27 @@
 Modern frontend application built with Nuxt 4, TypeScript, PrimeVue, and Tailwind CSS.
 
 ## Requirements
-- [bun](https://bun.sh/)
+- [pnpm](https://pnpm.io/)
 
 ## Quick Start
 
 ```bash
-bun install              # Install dependencies
+pnpm install             # Install dependencies
 cp .env{.example,}       # Copy environment config (edit if necessary)
-bun run dev              # Run development server
+pnpm dev                 # Run development server
 ```
 
 ## Development Commands
 
 ```bash
 # Code quality
-bun run typecheck  # Type checking with Vue TypeScript
-bun run lint       # Lint with ESLint
-bun run lint:fix   # Auto-fix linting issues
+pnpm typecheck     # Type checking with Vue TypeScript
+pnpm lint          # Lint with ESLint
+pnpm lint:fix      # Auto-fix linting issues
 
 # Build and preview
-bun run build      # Production build
-bun run preview    # Preview production build
+pnpm build         # Production build
+pnpm preview       # Preview production build
 ```
 
 ## Architecture

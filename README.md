@@ -15,7 +15,7 @@ A complete authentication and authorization system with:
 ### Prerequisites
 - PostgreSQL database
 - **Backend**: [uv](https://docs.astral.sh/uv/), [just](https://github.com/casey/just) → See [app_api/README.md](app_api/README.md)
-- **Frontend**: [bun](https://bun.sh/) → See [app_web/README.md](app_web/README.md)
+- **Frontend**: [pnpm](https://pnpm.io/) → See [app_web/README.md](app_web/README.md)
 
 ### Development Setup
 
@@ -28,8 +28,8 @@ just run
 
 # Frontend setup (in new terminal)
 cd app_web
-bun install
-bun run dev
+pnpm install
+pnpm dev
 ```
 
 The backend API runs at `http://localhost:8000` and the frontend at `http://localhost:3000`.

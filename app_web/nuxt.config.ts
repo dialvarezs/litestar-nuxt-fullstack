@@ -31,9 +31,6 @@ export default defineNuxtConfig({
     transpile: ['nuxt', 'primevue'],
   },
   compatibilityDate: '2025-07-15',
-  nitro: {
-    preset: 'bun',
-  },
   vite: {
     plugins: [
       tailwindcss(),
