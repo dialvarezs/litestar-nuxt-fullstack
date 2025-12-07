@@ -20,19 +20,17 @@ jobs:
     steps:
     - uses: actions/checkout@v5
 
-    - name: Install Bun
-      uses: oven-sh/setup-bun@v2
-      with:
-        bun-version: latest
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
 
     - name: Install dependencies
       working-directory: ./app_web
-      run: bun install
+      run: pnpm install
 
     - name: Run typecheck
       working-directory: ./app_web
-      run: bun run typecheck
+      run: pnpm typecheck
 
     - name: Build application
       working-directory: ./app_web
-      run: bun run build
+      run: pnpm build
