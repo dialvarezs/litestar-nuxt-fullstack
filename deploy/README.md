@@ -2,7 +2,8 @@
 
 - Rootless Podman + Quadlet is used to run the API, frontend, and Postgres in a single pod.
 - Default exposed ports are 10101 (API) and 10102 (web).
-- Run everything as a non-root user and put a reverse proxy (Caddy/Traefik/NGINX) in front.
+- Run everything as a non-root user and put a reverse proxy (Caddy/Traefik/NGINX) in front. If you want to use
+  Caddy using rootless Podman, check [this repository](https://github.com/dialvarezs/caddy-podman).
 - The frontend proxies traffic to the API inside the pod, so only the web port needs to be published for a functional app.
 
 > All paths below assume you run commands from `deploy/` so the hostPath mounts in `app-pod.yaml` resolve correctly.
