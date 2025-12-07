@@ -34,7 +34,6 @@
 
 1) Ensure a volume exists for Postgres data: `podman volume create app-db-pvc`
 2) Start the pod for a test run: `podman kube play app-pod.yaml`
-   - Confirms the hostPath mounts (`api-config.toml`, `db_init/`) and ports are correct.
 3) Stop the test pod once verified: `podman kube down app-pod.yaml`
 
 ## 5) Quadlet service
@@ -42,10 +41,8 @@
 1) Edit `app-pod.kube` so `Yaml=` points to your actual repo path (current value is a placeholder).
 2) Copy `app-pod.kube` and `app.network` into `~/.config/containers/systemd` (create the directory if needed).
 3) Reload systemd: `systemctl --user daemon-reload`
-4) Start and enable the service:
-   - `systemctl --user start app-pod.service`
-   - `systemctl --user enable app-pod.service`
-5) If the unit fails to appear, inspect the generated systemd with `/usr/libexec/podman/quadlet --user --dryrun`
+4) Start and enable the service: `systemctl --user enable --now app-pod.service`
+5) If the unit doesn't appear, inspect the generated systemd with `/usr/libexec/podman/quadlet --user --dryrun`
 
 ## Notes and verification
 
