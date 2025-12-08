@@ -1,4 +1,4 @@
-name: Frontend Build
+name: Frontend CI
 
 on:
   push:
@@ -28,6 +28,10 @@ jobs:
     - name: Install dependencies
       working-directory: ./app_web
       run: pnpm install
+
+    - name: Run linting
+      working-directory: ./app_web
+      run: pnpm lint
 
     - name: Run typecheck
       working-directory: ./app_web
