@@ -30,9 +30,9 @@ class UserService(SQLAlchemyAsyncRepositoryService[User, UserRepository]):
     """
 
     repository_type = UserRepository
-    match_fields = ("id",)
+    match_fields = "id"
 
-    def __init__(self, **repo_kwargs: object) -> None:
+    def __init__(self, **repo_kwargs: Any) -> None:  # noqa: ANN401
         """Initialize user service with repository configuration.
 
         Args:

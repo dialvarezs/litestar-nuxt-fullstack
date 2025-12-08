@@ -1,7 +1,7 @@
 """Permission management controller module."""
 
 from collections.abc import Sequence
-from typing import Any, ClassVar
+from typing import Any
 from uuid import UUID
 
 from advanced_alchemy.exceptions import NotFoundError
@@ -27,8 +27,8 @@ class PermissionController(Controller):
     path = "/permissions"
     tags = ("accounts / permissions",)
     return_dto = PermissionDTO
-    dependencies: ClassVar = {"permission_service": Provide(provide_permission_service)}
-    exception_handlers: ClassVar = {NotFoundError: not_found_error_handler}
+    dependencies = {"permission_service": Provide(provide_permission_service)}  # noqa: RUF012
+    exception_handlers = {NotFoundError: not_found_error_handler}  # noqa: RUF012
 
     @get(
         "/",

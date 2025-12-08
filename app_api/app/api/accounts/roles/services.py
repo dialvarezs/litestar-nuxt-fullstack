@@ -15,9 +15,9 @@ class RoleService(SQLAlchemyAsyncRepositoryService[Role, RoleRepository]):
     """Role service."""
 
     repository_type = RoleRepository
-    match_fields = ("id",)
+    match_fields = "id"
 
-    def __init__(self, **repo_kwargs: object) -> None:
+    def __init__(self, **repo_kwargs: Any) -> None:  # noqa: ANN401
         """Initialize role service with repository configuration.
 
         Args:

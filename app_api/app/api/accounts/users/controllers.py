@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Sequence  # noqa: TC003
-from typing import Any, ClassVar
+from typing import Any
 from uuid import UUID  # noqa: TC003
 
 from advanced_alchemy.exceptions import NotFoundError
@@ -42,8 +42,8 @@ class UserController(Controller):
     path = "/users"
     tags = ("accounts / users",)
     return_dto = UserDTO
-    dependencies: ClassVar = {"user_service": Provide(provide_user_service)}
-    exception_handlers: ClassVar = {NotFoundError: not_found_error_handler}
+    dependencies = {"user_service": Provide(provide_user_service)}  # noqa: RUF012
+    exception_handlers = {NotFoundError: not_found_error_handler}  # noqa: RUF012
 
     @get(
         "/",

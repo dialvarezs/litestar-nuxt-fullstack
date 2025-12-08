@@ -139,12 +139,13 @@ async def client(session_database: dict[str, str], clean_database: None) -> Asyn
         @classmethod
         def settings_customise_sources(
             cls,
-            _settings_cls: type[BaseSettings],
+            settings_cls: type[BaseSettings],
             init_settings: PydanticBaseSettingsSource,
             env_settings: PydanticBaseSettingsSource,
             dotenv_settings: PydanticBaseSettingsSource,
             file_secret_settings: PydanticBaseSettingsSource,
         ) -> tuple[PydanticBaseSettingsSource, ...]:
+            _ = settings_cls
             _ = env_settings
             _ = dotenv_settings
             _ = file_secret_settings

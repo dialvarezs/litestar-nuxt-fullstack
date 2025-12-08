@@ -37,6 +37,10 @@ jobs:
       working-directory: ./app_api
       run: uv sync
 
+    - name: Linting
+      working-directory: ./app_api
+      run: just lint
+
     - name: Typecheck with pyrefly
       working-directory: ./app_api
       run: just pyrefly

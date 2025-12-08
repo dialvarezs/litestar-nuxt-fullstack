@@ -1,7 +1,7 @@
 """Role management controller module."""
 
 from collections.abc import Sequence
-from typing import Any, ClassVar
+from typing import Any
 from uuid import UUID
 
 from advanced_alchemy.exceptions import NotFoundError
@@ -32,8 +32,8 @@ class RoleController(Controller):
     path = "/roles"
     tags = ("accounts / roles",)
     return_dto = RoleDTO
-    dependencies: ClassVar = {"role_service": Provide(provide_role_service)}
-    exception_handlers: ClassVar = {NotFoundError: not_found_error_handler}
+    dependencies = {"role_service": Provide(provide_role_service)}  # noqa: RUF012
+    exception_handlers = {NotFoundError: not_found_error_handler}  # noqa: RUF012
 
     @get(
         "/",
