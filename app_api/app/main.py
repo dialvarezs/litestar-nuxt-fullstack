@@ -23,8 +23,8 @@ from app.db import create_sqlalchemy_plugin
 
 def create_app(
     app_settings: Settings | None = None,
-    title: str = "App API",
     *,
+    title: str = "App API",
     enable_structlog: bool = True,
     pool_size: int | None = None,
     max_overflow: int | None = None,
