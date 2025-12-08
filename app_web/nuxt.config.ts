@@ -31,16 +31,16 @@ export default defineNuxtConfig({
     transpile: ['nuxt', 'primevue'],
   },
   compatibilityDate: '2025-07-15',
-  vite: {
-    plugins: [
-      tailwindcss(),
-    ],
-  },
   nitro: {
     compressPublicAssets: true,
     prerender: {
       crawlLinks: true,
     },
+  },
+  vite: {
+    plugins: [
+      tailwindcss(),
+    ],
   },
   eslint: {
     config: {
