@@ -1,13 +1,9 @@
-"""Account-related database models.
-
-This module defines the database models for user authentication and authorization,
-including User, Role, and UserRole association models.
-"""
+"""Account-related database models."""
 
 from __future__ import annotations
 
-from datetime import datetime  # noqa: TC003
-from uuid import UUID  # noqa: TC003
+from datetime import datetime
+from uuid import UUID
 
 from advanced_alchemy.base import AdvancedDeclarativeBase, CommonTableAttributes, UUIDv7AuditBase
 from sqlalchemy import ForeignKey, String

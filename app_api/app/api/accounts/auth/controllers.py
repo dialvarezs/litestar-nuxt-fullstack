@@ -1,5 +1,7 @@
 """Authentication controller module."""
 
+from __future__ import annotations
+
 from typing import Annotated, Any
 
 from litestar import Controller, Request, Response, post

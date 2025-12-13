@@ -2,16 +2,16 @@
 
 from __future__ import annotations
 
-from collections.abc import Sequence  # noqa: TC003
+from collections.abc import Sequence
 from typing import Any
-from uuid import UUID  # noqa: TC003
+from uuid import UUID
 
 from advanced_alchemy.exceptions import NotFoundError
 from litestar import Controller, Request, Response, delete, get, patch, post
 from litestar.di import Provide
-from litestar.dto import DTOData  # noqa: TC002
+from litestar.dto import DTOData
 from litestar.exceptions import HTTPException
-from litestar.security.jwt import Token  # noqa: TC002
+from litestar.security.jwt import Token
 
 from app.api.accounts.auth.guards import has_permission
 from app.api.accounts.users.dtos import (
@@ -24,7 +24,7 @@ from app.api.accounts.users.dtos import (
     UserWriteDTO,
 )
 from app.api.accounts.users.services import UserService, provide_user_service
-from app.models.accounts import User  # noqa: TC001
+from app.models.accounts import User
 
 
 def not_found_error_handler(_: Request[Any, Any, Any], __: NotFoundError) -> Response[Any]:
