@@ -36,6 +36,7 @@ ignore = [
     "COM812",  # Conflicts with formatter
     "D203",    # Incompatible with D211 (no-blank-line-before-class)
     "D213",    # Incompatible with D212 (multi-line-summary-first-line)
+    "RUF012",
     "TC001",   # Obsolete with PEP 649 (Python 3.14+ deferred annotations)
     "TC002",   # Obsolete with PEP 649 (Python 3.14+ deferred annotations)
     "TC003",   # Obsolete with PEP 649 (Python 3.14+ deferred annotations)

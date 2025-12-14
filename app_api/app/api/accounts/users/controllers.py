@@ -40,8 +40,8 @@ class UserController(Controller):
     path = "/users"
     tags = ("accounts / users",)
     return_dto = UserDTO
-    dependencies = {"user_service": Provide(provide_user_service)}  # noqa: RUF012
-    exception_handlers = {NotFoundError: not_found_error_handler}  # noqa: RUF012
+    dependencies = {"user_service": Provide(provide_user_service)}
+    exception_handlers = {NotFoundError: not_found_error_handler}
 
     @get(
         "/",

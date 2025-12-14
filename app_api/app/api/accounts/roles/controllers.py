@@ -32,8 +32,8 @@ class RoleController(Controller):
     path = "/roles"
     tags = ("accounts / roles",)
     return_dto = RoleDTO
-    dependencies = {"role_service": Provide(provide_role_service)}  # noqa: RUF012
-    exception_handlers = {NotFoundError: not_found_error_handler}  # noqa: RUF012
+    dependencies = {"role_service": Provide(provide_role_service)}
+    exception_handlers = {NotFoundError: not_found_error_handler}
 
     @get(
         "/",

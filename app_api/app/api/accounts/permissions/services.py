@@ -15,7 +15,7 @@ class PermissionService(SQLAlchemyAsyncRepositoryService[Permission, PermissionR
     """Business logic wrapper for permission operations."""
 
     repository_type = PermissionRepository
-    match_fields = ["id", "name"]  # noqa: RUF012
+    match_fields = ["id", "name"]
 
     async def list_by_ids(self, permission_ids: list[UUID | str]) -> Sequence[Permission]:
         """Fetch a set of permissions by identifier.

@@ -27,8 +27,8 @@ class PermissionController(Controller):
     path = "/permissions"
     tags = ("accounts / permissions",)
     return_dto = PermissionDTO
-    dependencies = {"permission_service": Provide(provide_permission_service)}  # noqa: RUF012
-    exception_handlers = {NotFoundError: not_found_error_handler}  # noqa: RUF012
+    dependencies = {"permission_service": Provide(provide_permission_service)}
+    exception_handlers = {NotFoundError: not_found_error_handler}
 
     @get(
         "/",
