@@ -27,7 +27,7 @@ class RoleService(SQLAlchemyAsyncRepositoryService[Role, RoleRepository]):
         super().__init__(**repo_kwargs)
         self.permission_service: PermissionService | None = None
 
-    def set_permission_service(self, permission_service: "PermissionService") -> None:
+    def set_permission_service(self, permission_service: PermissionService) -> None:
         """Inject the permission service dependency.
 
         Args:

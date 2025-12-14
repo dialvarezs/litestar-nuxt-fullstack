@@ -5,18 +5,16 @@ permission-based access control using the existing Permission model.
 """
 
 from collections.abc import Callable
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 from litestar.connection import ASGIConnection
 from litestar.exceptions import PermissionDeniedException
 from litestar.handlers.base import BaseRouteHandler
 
+from app.config import Settings
 from app.models.accounts import User
 
 from .permissions import get_user_permissions
-
-if TYPE_CHECKING:
-    from app.config import Settings
 
 
 def _get_authenticated_user(connection: ASGIConnection[Any, Any, Any, Any]) -> User:

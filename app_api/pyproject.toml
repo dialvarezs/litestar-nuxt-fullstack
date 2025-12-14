@@ -4,14 +4,13 @@ version = "0.1.0"
 description = "Backend API for full-stack application"
 authors = []
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.14"
 dependencies = [
     "advanced-alchemy[uuid]>=1.8.0",
     "asyncpg>=0.30.0",
     "litestar[standard,jwt,sqlalchemy,structlog]>=2.18.0",
     "pwdlib[argon2]>=0.3.0",
     "pydantic-settings>=2.12.0",
-    "sniffio>=1.3.1",
 ]
 
 [dependency-groups]
@@ -29,7 +28,7 @@ dev = [
 
 [tool.ruff]
 line-length = 110
-target-version = "py313"
+target-version = "py314"
 
 [tool.ruff.lint]
 select = ["ALL"]
@@ -37,19 +36,23 @@ ignore = [
     "COM812",  # Conflicts with formatter
     "D203",    # Incompatible with D211 (no-blank-line-before-class)
     "D213",    # Incompatible with D212 (multi-line-summary-first-line)
+    "TC001",   # Obsolete with PEP 649 (Python 3.14+ deferred annotations)
+    "TC002",   # Obsolete with PEP 649 (Python 3.14+ deferred annotations)
+    "TC003",   # Obsolete with PEP 649 (Python 3.14+ deferred annotations)
 ]
 
 [tool.ruff.lint.per-file-ignores]
 "migrations/versions/*.py" = ["D", "N999"]
 "tests/**/*.py" = ["PLC0415", "PLR2004", "S101", "S608"]
-"app/api/**/controllers.py" = ["TC001", "TC002", "TC003"]
-"app/models/*.py" = ["TC001", "TC002", "TC003"]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
 addopts = "-ra -q"
 testpaths = ["tests"]
 pythonpath = ["."]
+filterwarnings = [
+    "ignore:Core Pydantic V1 functionality isn't compatible:UserWarning:litestar.plugins.pydantic.utils",
+]
 
 [tool.alembic]
 script_location = "%(here)s/migrations"

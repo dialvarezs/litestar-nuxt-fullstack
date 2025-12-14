@@ -7,15 +7,13 @@ Create Date: ${create_date}
 """
 
 import warnings
-from typing import TYPE_CHECKING
+from collections.abc import Sequence
 
 import sqlalchemy as sa
 from alembic import op
 from advanced_alchemy.types import EncryptedString, EncryptedText, GUID, ORA_JSONB, DateTimeUTC, StoredObject, PasswordHash
 from sqlalchemy import Text  # noqa: F401
 ${imports if imports else ""}
-if TYPE_CHECKING:
-    from collections.abc import Sequence
 
 __all__ = ["downgrade", "upgrade", "schema_upgrades", "schema_downgrades", "data_upgrades", "data_downgrades"]
 
