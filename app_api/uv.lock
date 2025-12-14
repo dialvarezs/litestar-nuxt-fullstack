@@ -85,8 +85,8 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "advanced-alchemy", extras = ["uuid"], specifier = ">=1.8.0" },
-    { name = "asyncpg", specifier = ">=0.30.0" },
-    { name = "litestar", extras = ["standard", "jwt", "sqlalchemy", "structlog"], specifier = ">=2.18.0" },
+    { name = "asyncpg", specifier = ">=0.31.0" },
+    { name = "litestar", extras = ["standard", "jwt", "sqlalchemy", "structlog"], specifier = ">=2.19.0" },
     { name = "pwdlib", extras = ["argon2"], specifier = ">=0.3.0" },
     { name = "pydantic-settings", specifier = ">=2.12.0" },
 ]
