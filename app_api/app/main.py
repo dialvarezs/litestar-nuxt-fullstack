@@ -17,6 +17,7 @@ from litestar.plugins.structlog import StructlogConfig, StructlogPlugin
 
 from app.api.accounts.auth.security import create_oauth2_auth
 from app.api.accounts.router import accounts_router
+from app.api.health import health_router
 from app.config import Settings, settings
 from app.db import create_sqlalchemy_plugin
 
@@ -90,7 +91,7 @@ def create_app(
         plugins.append(structlog_plugin)
 
     litestar_app = Litestar(
-        route_handlers=[accounts_router],
+        route_handlers=[accounts_router, health_router],
         openapi_config=openapi_config,
         cors_config=cors_config,
         on_app_init=on_app_init,
