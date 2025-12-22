@@ -25,6 +25,11 @@ spec:
         runAsGroup: 920
       ports:
         - containerPort: 5432
+      livenessProbe:
+        exec:
+          command: ["pg_isready"]
+        initialDelaySeconds: 10
+        periodSeconds: 10
       volumeMounts:
         - mountPath: /docker-entrypoint-initdb.d/:z
           name: app-db-init
@@ -36,6 +41,9 @@ spec:
 
     - name: api
       image: app_api:latest
+      env:
+        - name: LITESTAR_WORKERS
+          value: "1"
       envFrom:
         - configMapRef:
             name: app
@@ -48,6 +56,12 @@ spec:
       ports:
         - containerPort: 8000
           hostPort: 10101
+      livenessProbe:
+        httpGet:
+          path: /health/live
+          port: 8000
+        initialDelaySeconds: 15
+        periodSeconds: 10
       volumeMounts:
         - mountPath: /app/config.toml:z
           name: app-api-config
@@ -67,6 +81,12 @@ spec:
       ports:
         - containerPort: 3000
           hostPort: 10102
+      livenessProbe:
+        httpGet:
+          path: /
+          port: 3000
+        initialDelaySeconds: 10
+        periodSeconds: 10
       volumeMounts:
         - mountPath: /tmp:Z
           name: app-web-tmp
