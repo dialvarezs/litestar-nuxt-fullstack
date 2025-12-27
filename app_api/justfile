@@ -1,3 +1,4 @@
+set positional-arguments := true
 set shell := ["uv", "run", "bash", "-c"]
 set dotenv-load := true
 
@@ -7,7 +8,7 @@ run:
     litestar run --reload
 
 db *args='':
-    litestar database {{args}}
+    litestar database "$@"
 
 format: ruff_fmt ruff_sort_imports
 
@@ -27,4 +28,4 @@ ty:
     ty check app/ tests/
 
 test *args='':
-    pytest {{args}}
+    pytest "$@"
